@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+  
+  <head>
+    <meta name="description" content="FontAppX"/>
+    <meta charset="utf-8">
+    <title>Up and Down the River</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+      * {
+        user-select: none;
+        font-family: 'Courier New', Courier, monospace;
+        font-weight: bold;
+        color: #eee;
+      }
+      html {
+        background-color: #042;
+      }
+      body {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      input {
+        box-sizing: border-box;
+        margin: 0 0 3px 0;
+        height: 50px;
+        line-height: 50px;
+        font-size: 34px;
+        color: #fff;
+        background-color: #fff4;
+        border: 1px solid #fff8;
+        border-radius: 6px;
+        padding: 0 20px;
+        text-align: center;
+      }
+      label {
+        box-sizing: border-box;
+        display: block;
+        margin: 0;
+        height: 46px;
+        line-height: 46px;
+        font-size: 30px;
+      }
+      button {
+        box-sizing: border-box;
+        margin: 0;
+        height: 46px;
+        line-height: 46px;
+        text-align: center;
+        padding: 0 10px 0 10px;
+        border-radius: 3px;
+        border: none;
+        cursor: pointer;
+        color: #333;
+      }
+      h2 {
+        margin: 0;
+        font-size: 30px;
+        padding: 20px 0 20px 0;
+      }
+      h3 {
+        margin: 0;
+        font-size: 24px;
+        padding: 0;
+      }
+      p {
+        font-size: 24px;
+        font-weight: normal;
+        line-height: 30px;
+        padding: 0 80px;
+        margin: 0;
+        text-align: justify;
+      }
+      #content {
+        align-content: center;
+      }
+      #sidebar {
+        width: 8%;
+        box-sizing: border-box;
+        display: inline-block;
+      }
+      .big_btn {
+        height: 56px;
+        line-height: 56px;
+        padding: 0 30px 0 30px;
+        font-size: 26px;
+        border: 2px solid #ccc;
+      }
+      .hud_btn {
+        height: 46px;
+        line-height: 46px;
+        padding: 0, 10px, 0, 10px;
+        font-size: 24px;
+        margin-left: 3px;
+        float: right;
+      }
+      .selected_button {
+        background-color: #7fb;
+        border-color: #5b8;
+      }
+      .player_name {
+        font-weight: bold;
+        text-align: center;
+      }
+      .hud_label {
+        display: inline-block;
+      }
+      .score_label {
+        float: left;
+      }
+      .panel {
+        width: 100%;
+        display: block;
+      }
+      .center {
+        text-align: center;
+      }
+      .full_width {
+        width: 100%
+      }
+      .hidden {
+        display: none;
+      }
+      .player_column {
+        box-sizing: border-box;
+        background-color: #0003;
+        display: inline-block;
+        border: 2px solid #aaa;
+        border-radius: 3px;
+        height: 100%;
+        margin: 3px;
+        padding: 3px;
+        vertical-align: top;
+      }
+      .bright {
+        background-color: #fff2;
+      }
+      .error {
+        color: #d54;
+      }
+    </style>
+  
+  </head>
+  
+  <body>
+
+    <div id="content">
+
+      <div id="title_panel" class="panel center">
+        <h1>Up & Down The River.</h1>
+      </div>
+
+      <div id="rules_panel" class="panel hidden">
+        <h2 class="center">About</h2><br>
+        <p>
+          Up and Down the River is a social card game best enjoyed after dinner with good friends, easy listening music, and a few beverages of your choice.<br>
+          <br>
+          The game is played in rounds, with each round consisting of a number of tricks. The game style is pretty much identical to the well known card game <a href="https://en.wikipedia.org/wiki/Euchre" target="_blank">Euchre</a>.<br>
+          <br>
+          When playing "up the river" the number of cards dealt to each player increases from one card in the first round, to the number of cards chosen as the length of the river in the last round.<br>
+          <br>
+          Then the game is played back "down the river" starting with the maximum number of cards, to one card in the last round.<br>
+          <br>
+          You should be able to see where the name "Up and Down the River" comes from now.<br>
+          <br>
+        </p>
+        <h2 class="center">How to Play</h2><br>
+        <p>
+          The deck is shuffled and cards are dealt cards face up to all players in order until a Jack is dealt, and the player who received the jack becomes the dealer for the first round.<br>
+          <br>
+          In the application choose the number of players and length of the river. Then enter the names of the players starting with the dealer and proceeding clockwise after that.<br>
+          <br>
+          The dealer gathers and shuffles the deck, and then deals the required number of cards for the round to each player.<br>
+          <br>
+          The dealer then turns the next card in the deck face up, and this card is the trump suit.<br>
+          <br>
+          When played, a trump card "trumps" (or beats) any other card of any other suit, no matter what that cards face value is. For example, if hearts is trump then the Jack of Hearts (known as the left bower) is the highest card in the game, then followed by its opposite red card, the Jack of Diamonds (known as the right bower), then the Ace of Hearts, King of Hearts, and so on.<br>
+          <br>
+          With the trump suit established, each player examines their cards determines how many tricks they will claim in the current round, and selects this number in the application.<br>
+          <br>
+          The last player to claim tricks is the dealer where some caveats apply.<br>
+          <br>
+          - If the total number of tricks claimed is equal to the maximum number of tricks in the round, then the dealer cannot claim zero tricks, they must claim at least one trick.<br>
+          <br>
+          - The dealer cannot claim a number of tricks if the total number of tricks claimed plus their desired claim equals the maximum number of tricks in the round, so if there is a maximum of 10 tricks and the total number of claimed tricks is 7, then the dealer cannot claim 3 tricks.<br>
+          <br>
+          Once all players have informed the keeper how many tricks they claim, the round begins with the lead player laying down a card from their hand.<br>
+          <br>
+          All other players (in the established order) then play a card and where possible must follow suit, so if the lead player plays a Heart, then all other players MUST also play a Heart if they have one in their hand.<br>
+          <br>
+          If any player cannot follow suit then they are free to play any card in their hand.<br>
+          <br>
+          Once all players have laid down a card, the winner is determined and they claim the trick.<br>
+          <br>
+          The winner of the trick now becomes the lead player and the round continues as described above, until all tricks have been claimed.<br>
+          <br>
+          Once a round is complete, players are awarded points according to how many tricks they claimed versus how many tricks they actually took.<br>
+          <br>
+          if a player takes the number of tricks that they claimed then they are awarded 10 points and an additional 1 point for each trick they took.<br>
+          <br>
+          if a player claims 0 tricks and they take 0 zero tricks then they are awarded 5 points<br>
+          <br>
+          if a player does not take the number of tricks they claimed then they are not awarded any points.<br>
+          <br>
+          Once all rounds have been played the winner is the player with the most accumulated points.<br>
+          <br>
+        </p>
+        <div class="center">
+          <button class="big_btn" onclick="showRules(false);">Okay</button><br><br>
+        </div>
+      </div>
+
+      <div id="about_panel" class="panel center hidden">
+        <br>
+        <br>
+        <h2>Up and Down the River version 1.0</h2>
+        <h2>(c) 2023 Cliff Earl, <a href="https://github.com/Antix-Development" target="_blank">Antix Development</a>.</h2>
+        <h2>Created using MicroSoft <a href="https://code.visualstudio.com/" target="_blank">Visual Studio Code</a></h2><br>
+        <br>
+        <div class="center">
+          <button class="big_btn" onclick="window.open('https://www.buymeacoffee.com/antixdevelu', '_blank');">Buy Cliff a Coffee</button><br><br>
+          <button class="big_btn" onclick="showAbout(false);">Okay</button>
+        </div>
+      </div>
+
+      <div id="new_game_panel" class="panel center">
+        <button class="big_btn" onclick="startNewGame();">Start New Game</button>
+        <button class="big_btn" onclick="showRules(true);">How To Play</button>
+        <button class="big_btn" onclick="showAbout(true);">About</button><br><br>
+      </div>
+
+      <div id="player_count_panel" class="panel center hidden margin-top">
+        <h2 id="player_count_label"></h2>
+        <button class="big_btn" onclick="setPlayerCount(2);">2</button>
+        <button class="big_btn" onclick="setPlayerCount(3);">3</button>
+        <button class="big_btn" onclick="setPlayerCount(4);">4</button>
+        <button class="big_btn" onclick="setPlayerCount(5);">5</button>
+        <button class="big_btn" onclick="setPlayerCount(6);">6</button>
+      </div>
+
+      <div id="river_length_panel" class="panel center hidden margin-top">
+        <h2>And how long will the river be?</h2>
+        <button id="river_length_button_1" class="big_btn" onclick="setRiverLength(1);">1</button>
+        <button id="river_length_button_2" class="big_btn" onclick="setRiverLength(2);">2</button>
+        <button id="river_length_button_3" class="big_btn" onclick="setRiverLength(3);">3</button>
+        <button id="river_length_button_4" class="big_btn" onclick="setRiverLength(4);">4</button>
+        <button id="river_length_button_5" class="big_btn" onclick="setRiverLength(5);">5</button>
+        <button id="river_length_button_6" class="big_btn" onclick="setRiverLength(6);">6</button>
+        <button id="river_length_button_7" class="big_btn" onclick="setRiverLength(7);">7</button>
+        <button id="river_length_button_8" class="big_btn" onclick="setRiverLength(8);">8</button>
+        <button id="river_length_button_9" class="big_btn" onclick="setRiverLength(9);">9</button>
+        <button id="river_length_button_10" class="big_btn" onclick="setRiverLength(10);">10</button>
+      </div>
+
+      <div id="player_panels" class="panel">
+        <!-- Contets are generated in app.js -->
+      </div>
+
+      <div id="entering_player_names_panel" class="panel center hidden margin-top">
+        <h2>Enter player names</h2>
+        <button class="big_btn" onclick="playerNamesEntered();">Continue</button>
+      </div>
+
+      <div id="round_settings_panel" class="panel center hidden margin-top">
+        <h2 id="bid_label"></h2>
+        <button id="trick_button_0" class="big_btn" onclick="claimTricks(0);">0</button>
+        <button id="trick_button_1" class="big_btn" onclick="claimTricks(1);">1</button>
+        <button id="trick_button_2" class="big_btn" onclick="claimTricks(2);">2</button>
+        <button id="trick_button_3" class="big_btn" onclick="claimTricks(3);">3</button>
+        <button id="trick_button_4" class="big_btn" onclick="claimTricks(4);">4</button>
+        <button id="trick_button_5" class="big_btn" onclick="claimTricks(5);">5</button>
+        <button id="trick_button_6" class="big_btn" onclick="claimTricks(6);">6</button>
+        <button id="trick_button_7" class="big_btn" onclick="claimTricks(7);">7</button>
+        <button id="trick_button_8" class="big_btn" onclick="claimTricks(8);">8</button>
+        <button id="trick_button_9" class="big_btn" onclick="claimTricks(9);">9</button>
+        <button id="trick_button_10" class="big_btn" onclick="claimTricks(10);">10</button>
+      </div>
+
+      <div id="end_round_panel" class="panel center hidden margin-top">
+        <h2>Did the players claim their tricks or not.</h2>
+        <button id="end_round_button" class="big_btn" onclick="confirmEndRound();">Continue</button>
+        <h2 id="end_round_error_label" class="hidden error">Available tricks exceeded, review claims.</h2>
+      </div>
+
+      <div id="end_game_panel" class="panel center hidden margin-top">
+        <h1 id="winner_label"></h1>
+        <button class="big_btn" onclick="location.reload();">Play Again</button>
+      </div>
+
+    </div>
+
+  </body>
+
+  <script>
+
+    var 
+    round,
+    rounds = [],
+
+    playerCount,
+    players = [],
+
+    dealer, // indexes into players array
+    leader,
+    bidder,
+
+    tricksClaimedByOtherPlayers,
+
+    roundDisplayPanel; // Appears on left side of display and shows which round is being played
+
+    // Utility
+    const 
+    // log = (t) => console.log(t),
+    getByID = (id) => document.getElementById(id),
+    showElement = (el, state) => el.style.display = (state) ? 'block' : 'none',
+    createElement = (type) => document.createElement(type),
+    newLabel = (text) => { var label = createElement('label'); label.innerHTML = text; return label; },
+
+    newGamePanel = getByID('new_game_panel'),
+    endGamePanel = getByID('end_game_panel'),
+    playerCountPanel = getByID('player_count_panel'),
+    playerCountLabel = getByID('player_count_label'),
+    riverLengthPanel = getByID('river_length_panel'),
+    roundSettingsPanel = getByID('round_settings_panel'),
+    endRoundPanel = getByID('end_round_panel'),
+    endRoundButton = getByID('end_round_button'),
+    endRoundErrorLabel = getByID('end_round_error_label'),
+    rulesPanel = getByID('rules_panel'),
+    aboutPanel = getByID('about_panel'),
+    enteringPlayerNamesPanel = getByID('entering_player_names_panel'),
+    playerPanels = getByID('player_panels'),
+    bidLabel = getByID('bid_label'),
+    winnerLabel = getByID('winner_label'),
+
+    WINNER_BORDER_COLOR = '#fc0',
+    DEALER_BORDER_COLOR = '#08f',
+    LEADER_BORDER_COLOR = '#4c4',
+    DEFAULT_BORDER_COLOR = '#aaa',
+
+    maxRiverLengthByPlayerCount = [0, 10, 10, 10, 10, 10, 8, 7, 6], // Basically 52 cards / number = maximum length of river
+
+    // User clicked the "New Game" button
+    startNewGame = () => {
+      showElement(newGamePanel, false); // Hide current panel (title panel)
+
+      const hours = new Date().getHours(); // Generate the "how many players" string according to the time of day
+      var str = 'morning';
+
+      if (hours >= 17) {
+        str = 'evening';
+
+      } else if (hours >= 12) {
+        str = 'afternoon';
+
+      }
+      playerCountLabel.innerHTML = `How many people will be playing this ${str}?`;
+
+      showElement(playerCountPanel, true); // Show next panel (set player count panel)
+    },
+
+    // User set number of players
+    setPlayerCount = (count) => {
+      showElement(playerCountPanel, false); // Hide current panel (set player count panel)
+
+      playerCount = count;
+
+      for (let i = 0; i < 10; i++)
+        getByID(`river_length_button_${i + 1}`).disabled = false; // Enable all buttons
+
+      for (let i = maxRiverLengthByPlayerCount[count]; i < 10; i++)
+        getByID(`river_length_button_${i + 1}`).disabled = true; // Disable invalid buttons
+
+      showElement(riverLengthPanel, true); // Show next panel (set river length panel)
+    },
+
+    // User set river length (number of rounds up and down to be played)
+    setRiverLength = (length) => {
+      showElement(riverLengthPanel, false); // Hide current panel (set river length panel)
+
+      for (let i = 1; i <= length; i++) rounds.push(i); // Rounds contains number of cards to be dealt each round
+      for (let i = length; i > 0; i--) rounds.push(i);
+
+      for (let i = 0; i < 10; i++)
+        getByID(`trick_button_${i + 1}`).disabled = false; // Enable all buttons
+      
+      for (let i = length; i < 10; i++)
+        getByID(`trick_button_${i + 1}`).disabled = true; // Disable invalid buttons
+
+      roundDisplayPanel = createElement('div'); // Create panel where round numbers will be displayed
+      roundDisplayPanel.id = 'roundDisplayPanel';
+      roundDisplayPanel.classList.add('center', 'player_column');
+      roundDisplayPanel.appendChild(newLabel(""));
+      roundDisplayPanel.appendChild(newLabel("Round"));
+      playerPanels.appendChild(roundDisplayPanel);
+
+      // 
+      // Generate players
+      // 
+
+      for (let i = 0; i < playerCount; i++) {
+
+        var playerPanel = createElement('div'); // All other player related elements will be appended in this panel
+        playerPanel.classList.add('center', 'player_column');
+        playerPanel.style.width = `${(92 / playerCount) - 1}%`;
+
+        var roleLabel = createElement('label'); // Current role (dealer, leader)
+        roleLabel.classList.add('full_width', 'center');
+        playerPanel.appendChild(roleLabel);
+
+        // 
+        // Set panel frame colors according to role
+        // 
+
+        if (i === 0) {
+          roleLabel.innerHTML = 'Dealer';
+          playerPanel.style.borderColor = DEALER_BORDER_COLOR;
+
+        } else if (i === 1) {
+          roleLabel.innerHTML = 'Leader';
+          playerPanel.style.borderColor = LEADER_BORDER_COLOR;
+
+        } else {
+          roleLabel.innerHTML = ' ';
+          playerPanel.style.borderColor = DEFAULT_BORDER_COLOR;
+        }
+
+        var input = createElement('input'); // Create player name text input
+        input.setAttribute('type', 'text');
+        input.classList.add('full_width', 'player_name');
+        input.placeholder  = `player${i + 1}`;
+        playerPanel.appendChild(input);
+
+        var gamePanel = createElement('div');
+        playerPanel.appendChild(gamePanel);
+
+        players.push({ // Create the player
+          id: i,
+          hasBid: false,
+          scoreUpdated: false,
+          name: '',
+          score: 0,
+          points: 0, // Points scored for current round
+          claimedTricks: 0,
+          claimedTricksLabel: null,
+          gotTricks: false,
+          pointsLabel: null,
+          yesButton: null,
+          noButton: null,
+          roleLabel: roleLabel,
+          playerPanel: playerPanel,
+          gamePanel: gamePanel,
+          roundPanel: null,
+          input: input, // Where player name is set
+        });
+
+        playerPanels.appendChild(playerPanel); // Append current players panel to all player panels
+      }
+      showElement(enteringPlayerNamesPanel, true); // Show next panel (set player names panel)
+    },
+
+    // User has confirmed that all player names have been entered
+    playerNamesEntered = () => {
+
+      for (let i = 0; i < players.length; i++) {
+        const player = players[i];
+        if (player.input.value === "") return; // Don't proceed until all names have a value
+        player.name = player.input.value;
+      }
+
+      showElement(enteringPlayerNamesPanel, false); // Hide current panel (set player names panel)
+
+      for (let i = 0; i < players.length; i++)
+      players[i].input.readOnly = true;
+    
+      dealer = -1; // Dealer is first player
+
+      advance();
+    },
+
+    // Advance to the next round
+    advance = () => {
+      showElement(endRoundPanel, false); // Hide current panel (end round panel)
+
+      if (rounds.length === 0) return gameOver();
+
+      round = rounds.shift(); // Number of cards to deal
+
+      for (let i = 0; i < 10; i++) getByID(`trick_button_${i + 1}`).disabled = false; // Enable all buttons
+
+      endRoundErrorLabel.classList.add('hidden');
+
+      tricksClaimedByOtherPlayers = 0;
+
+      dealer ++; // Increment dealer and wrap in array
+      if (dealer == players.length) dealer = 0;
+
+      leader = dealer + 1; // Increment leader and wrap in array
+      if (leader == players.length) leader = 0;
+
+      bidder = leader; // First bidder is always the leader
+
+      updateBiddingLabelText();
+
+      players.forEach(player => {
+        player.score += player.points; // Add points from last round
+
+        player.hasBid = false;
+        player.scoreUpdated = false;
+        player.points = 0;
+        player.gotTricks = false;
+
+        var roundPanel = createElement('div');
+
+        player.roundPanel = roundPanel;
+
+        var label = newLabel(player.score);
+        label.classList.add('hud_label', 'score_label');
+        roundPanel.appendChild(label);
+
+        player.gamePanel.appendChild(roundPanel);
+
+        if (player.id === dealer) {
+          player.playerPanel.style.borderColor = DEALER_BORDER_COLOR;
+          player.roleLabel.innerHTML = 'Dealer';
+        } else if (player.id === leader) {
+          player.playerPanel.style.borderColor = LEADER_BORDER_COLOR;
+          player.roleLabel.innerHTML = 'Leader';
+        } else {
+          player.playerPanel.style.borderColor = DEFAULT_BORDER_COLOR;
+          player.roleLabel.innerHTML = ' ';
+        }
+      });
+
+      for (let i = round; i < 10; i++)
+        getByID(`trick_button_${i + 1}`).disabled = true; // Disable invalid buttons
+
+      roundDisplayPanel.appendChild(newLabel(round));
+
+      showElement(roundSettingsPanel, true); // Show next panel (end round panel)
+    },
+
+    // Game is over, determine and display winner/s
+    gameOver = () => {
+      players.sort((a, b) => { return b.score - a.score; }); // Sort high to low scores
+      var winners = [];
+
+      for (let i = 0; i < players.length; i++) {
+        players[i].playerPanel.style.borderColor = DEFAULT_BORDER_COLOR;
+        players[i].playerPanel.classList.remove('bright');
+      }
+
+      for (let i = 0; i < players.length; i++) {
+        if (players[i].score === players[0].score) {
+          winners.push(players[i]); // Create an array of all players with the best score
+          players[i].playerPanel.style.borderColor = WINNER_BORDER_COLOR;
+        }
+      }
+
+      if (winners.length === 1) {
+        winnerLabel.innerHTML = `${winners[0].name} is the winner.`; // There was a single winner
+
+      } else { // The game was drawn between two or more players
+
+        var str = 'The game is drawn between ';
+        for (let i = 0; i < winners.length - 1; i++) {
+          str += `${winners[i].name},`;
+        }
+
+        winnerLabel.innerHTML = str + ` and ${winners[winners.length - 1].name}.`; // Append last winner
+      }
+
+      showElement(endGamePanel, true); // Show next panel
+    },
+
+    // Update the strign for querying any players claim on tricks
+    updateBiddingLabelText = () => {
+      const biddingPlayer = players[bidder];
+
+      getByID('trick_button_0').disabled = false;
+
+      bidLabel.innerHTML = `Round ${round}: How many tricks does ${biddingPlayer.name} claim?`;
+      biddingPlayer.playerPanel.classList.add('bright');
+
+      if (biddingPlayer.id == dealer) {
+
+        if (tricksClaimedByOtherPlayers === round) {
+          getByID('trick_button_0').disabled = true; // Cannot claim zero tricks
+        }
+
+        if (tricksClaimedByOtherPlayers > 0 && tricksClaimedByOtherPlayers < round) {
+          getByID(`trick_button_${round - tricksClaimedByOtherPlayers}`).disabled = true; // Cannot claim tricks that cause maximum tricks to be claimed
+        }
+      }
+    },
+
+    // Determine if all players have claimed a number of tricks
+    allPlayersHaveBid = () => {
+      for (let i = 0; i < players.length; i++)
+        if (!players[i].hasBid) return false;
+
+        return true;
+    },
+
+    // Determine if all players achieved or did not achieve their claims on tricks
+    updatedAllScores = () => {
+      for (let i = 0; i < players.length; i++)
+        if (!players[i].scoreUpdated) return false;
+      
+        return true;
+    },
+
+    // Cleanup after the current round has ended
+    nextRound = () => {
+      for (let i = 0; i < players.length; i++) {
+        const player = players[i];
+        player.roundPanel.removeChild(player.yesButton);
+        player.roundPanel.removeChild(player.noButton);
+        
+        if (player.roundPanel) player.roundPanel.style.backgroundColor = '#0000';
+      }
+      advance();
+    },
+
+    // Enable or disable the given players yes/no buttons according to the given state
+    enableYesNoButtons = (player, state) => {
+      player.yesButton.disabled = !state;
+      player.noButton.disabled = !state;
+    },
+
+    //Set the number of claimed tricks for the bidding player to the given number
+    claimTricks = (number) => {
+      tricksClaimedByOtherPlayers += number;
+
+      var biddingPlayer = players[bidder];
+
+      biddingPlayer.claimedTricks = number;
+      biddingPlayer.hasBid = true;
+
+      // 
+      // Generate UI elements
+      // 
+
+      const roundPanel = biddingPlayer.roundPanel;
+      
+      var label = newLabel(biddingPlayer.claimedTricks);
+      label.classList.add('hud_label');
+      biddingPlayer.claimedTricksLabel = label;
+
+      var yesButton = createElement('button');
+      yesButton.classList.add('hud_btn');
+      yesButton.innerHTML = 'Yes';
+      biddingPlayer.yesButton = yesButton;
+
+      var noButton = createElement('button');
+      noButton.classList.add('hud_btn');
+      noButton.innerHTML = 'No';
+      biddingPlayer.noButton = noButton;
+
+      enableYesNoButtons(biddingPlayer, false);
+
+      // Yes button click handler
+      yesButton.onclick = () => {
+        biddingPlayer.scoreUpdated = true;
+
+        if (biddingPlayer.claimedTricks === 0) {
+          biddingPlayer.points = 5; // Player went for and got got 0 tricks
+          label.innerHTML = '+5';
+
+        } else {
+          biddingPlayer.points = 10 + biddingPlayer.claimedTricks; // Player went for and got specified number of tricks
+          label.innerHTML = `+${10 + biddingPlayer.claimedTricks}`;
+        }
+
+        biddingPlayer.gotTricks = true;
+        noButton.classList.remove('selected_button');
+        yesButton.classList.add('selected_button');
+        sanityCheck();
+      };
+
+      // No button click handler
+      noButton.onclick = () => {
+        biddingPlayer.scoreUpdated = true;
+        biddingPlayer.points = 0;
+        label.innerHTML = '-';
+
+        biddingPlayer.gotTricks = false;
+        yesButton.classList.remove('selected_button');
+        noButton.classList.add('selected_button');
+        sanityCheck();
+      };
+
+      roundPanel.appendChild(label);
+      roundPanel.appendChild(noButton);
+      roundPanel.appendChild(yesButton);
+
+      bidder ++;
+      if (bidder === players.length) bidder = 0;
+
+      for (let i = 0; i < players.length; i++) players[i].playerPanel.classList.remove('bright');
+
+      updateBiddingLabelText();
+
+      if (allPlayersHaveBid()) {
+
+        // 
+        // All players have claimed tricks
+        // 
+        
+        for (let i = 0; i < players.length; i++) players[i].playerPanel.classList.remove('bright');
+
+        showElement(roundSettingsPanel, false);
+
+        endRoundButton.disabled = true;
+
+        showElement(endRoundPanel, true);
+
+        for (let i = 0; i < players.length; i++) enableYesNoButtons(players[i], true); // Enable yes/no buttons for all players
+      }
+    },
+
+    // Display an error message if the total number of claimed tricks exceeds the number of tricks available
+    sanityCheck = () => {
+      var 
+      claimed = 0,
+      enableButton = true;
+
+      for (let i = 0; i < players.length; i++)
+        if (players[i].gotTricks) claimed += players[i].claimedTricks;
+
+      if (claimed > round) { // Exceeded, show the error message
+        endRoundErrorLabel.classList.remove('hidden');
+        enableButton = false;
+        endRoundButton.disabled = true;
+
+      } else { // Hide the error message
+        endRoundErrorLabel.classList.add('hidden');
+
+      }
+
+      // NOTE: This doesn't really work how I intended, maybe it should be removed?
+      if (updatedAllScores() && enableButton) {
+        endRoundButton.disabled = false;
+      }
+    },
+
+    // User confirmed the round has ended
+    confirmEndRound = () => {
+      if (updatedAllScores()) nextRound();
+    },
+
+    // User clicked the "How To Play" button
+    showRules = (state) => {
+      showElement(rulesPanel, state);
+      showElement(newGamePanel, !state);
+    },
+
+    // User clicked the "About" button
+    showAbout = (state) => {
+      showElement(aboutPanel, state);
+      showElement(newGamePanel, !state);
+    };
+
+
+  </script>
+
+</html>
