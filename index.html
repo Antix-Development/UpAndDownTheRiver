@@ -51,9 +51,18 @@
         text-align: center;
         padding: 0 10px 0 10px;
         border-radius: 3px;
-        border: none;
         cursor: pointer;
+        border: 1px solid #bbb;
+        background-color: #ddd;
         color: #333;
+      }
+      button:disabled {
+        border: 1px solid #bbb8;
+        background-color: #ddd8;
+        color: #3338;
+      }
+      button:disabled:hover {
+        cursor:not-allowed;
       }
       h2 {
         margin: 0;
@@ -86,7 +95,7 @@
         line-height: 56px;
         padding: 0 30px 0 30px;
         font-size: 26px;
-        border: 2px solid #ccc;
+        border: 2px solid #bbb;
       }
       .hud_btn {
         height: 46px;
@@ -95,6 +104,33 @@
         font-size: 24px;
         margin-left: 3px;
         float: right;
+      }
+      .flash {
+        animation-name: flash;
+        animation-duration: .20s;
+        animation-iteration-count: 1;
+      }
+      @keyframes flash {
+        0%   {
+            border-color: #bbb0;
+            background-color: #ddd0;
+            color: #ddd0;
+        }
+        10% {
+          border-color: #dd0;
+          background-color: #ff0;
+          color: #ee0;
+        }
+        25%   {
+            border-color: #fff;
+            background-color: #fff;
+            color: #fff;
+        }
+        100% {
+          border-color: #bbb;
+          background-color: #ddd;
+          color: #333;
+        }
       }
       .selected_button {
         background-color: #7fb;
@@ -650,12 +686,12 @@
       biddingPlayer.claimedTricksLabel = label;
 
       var yesButton = createElement('button');
-      yesButton.classList.add('hud_btn');
+      yesButton.classList.add('hud_btn', 'hidden');
       yesButton.innerHTML = 'Yes';
       biddingPlayer.yesButton = yesButton;
 
       var noButton = createElement('button');
-      noButton.classList.add('hud_btn');
+      noButton.classList.add('hud_btn', 'hidden');
       noButton.innerHTML = 'No';
       biddingPlayer.noButton = noButton;
 
@@ -708,8 +744,15 @@
         // 
         // All players have claimed tricks
         // 
-        
-        for (let i = 0; i < players.length; i++) players[i].playerPanel.classList.remove('bright');
+
+        for (let i = 0; i < players.length; i++) {
+          players[i].yesButton.classList.remove('hidden');
+          players[i].noButton.classList.remove('hidden');
+          players[i].yesButton.classList.add('flash');
+          players[i].noButton.classList.add('flash');
+
+          players[i].playerPanel.classList.remove('bright');
+        }
 
         showElement(roundSettingsPanel, false);
 
