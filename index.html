@@ -259,7 +259,7 @@
       }
 
       .history_duration {
-        width: 8%;
+        width: 10%;
       }
 
       .history_rounds {
@@ -271,7 +271,7 @@
       }
 
       .history_hr {
-        margin-bottom: 16px;
+        margin: 0px 48px 16px 48px;
       }
 
     </style>
@@ -404,15 +404,13 @@
             <label class="hud_label history_players">Players & Scores</label>
           </div>
           <hr class="history_hr">
-
-          <!-- This content will be generated -->
+          <!-- Content will be generated here -->
         </div>
         <div class="center">
           <br>
           <button class="big_btn" onclick="showHistory(false);">Okay</button>
         </div>
       </div>
-
 
       <!-- Player count panel -->
       <div id="player_count_panel" class="center hidden margin-top">
@@ -489,8 +487,6 @@
 
   <script>
     var 
-    roundHeaderLabel,
-
     round,
     rounds = [],
     riverLength,
@@ -503,6 +499,8 @@
     bidder,
 
     tricksClaimedByOtherPlayers,
+
+    roundHeaderLabel,
 
     roundDisplayPanel, // Appears on left side of display and shows which round is being played
 
@@ -797,7 +795,7 @@
 
       let event = newHistoricEvent();
       historicEvents.push(event);
-      displayHistoricEvent(event);
+      saveHistory();
 
       // Remove player panel effects
       for (let i = 0; i < players.length; i++) {
@@ -1085,7 +1083,7 @@
     // TODO: Apply settings
     // 
 
-    const root = document.documentElement;
+    // const root = document.documentElement;
     // log(`The value of --background-color is: ${getComputedStyle(root).getPropertyValue('--background-color')}`);
     // root.style.setProperty('--background-color', '#f0f');
 
@@ -1106,7 +1104,7 @@
       }
 
       return {
-        date: startDate.toLocaleString(),
+        date: startDate.toLocaleDateString(),
         duration: `${Math.floor(Math.abs(new Date() - startDate) / (1000 * 60))} mins`,
         players: playerText.slice(0, -2),
         rounds: riverLength
@@ -1137,7 +1135,9 @@
       container.appendChild(playersLabel);
 
       historyEntries.appendChild(container);
-    };
+    },
+
+    saveHistory = () => localStorage.setItem(HISTORY_FILENAME, JSON.stringify(historicEvents));
 
     // localStorage.removeItem(HISTORY_FILENAME);
 
@@ -1148,7 +1148,7 @@
 
     } else {
       historicEvents = [];
-      localStorage.setItem(HISTORY_FILENAME, JSON.stringify(historicEvents));
+      saveHistory();
     }
 
     for (let i = 0; i < historicEvents.length; i++) {
