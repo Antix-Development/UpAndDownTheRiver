@@ -26,6 +26,8 @@
         --button-disabled-color: #111;
 
         --normal-element-height: 56px;
+
+        --button-input-label-font-size: 30px;
       }
 
       * {
@@ -54,7 +56,7 @@
       input {
         margin: 0 0 3px 0;
         height: var(--normal-element-height);
-        font-size: 30px;
+        font-size: var(--button-input-label-font-size);
         color: #fff;
         background-color: #fff4;
         border: 1px solid #fff8;
@@ -69,7 +71,7 @@
         display: block;
         margin: 0;
         height: var(--normal-element-height);
-        font-size: 30px;
+        font-size: var(--button-input-label-font-size);
       }
 
       button {
@@ -101,25 +103,28 @@
         color: var(--button-disabled-color);
       }
 
+      h1 {
+        margin: 0;
+        font-size: 40px;
+        padding: 20px 0 20px 0;
+        text-shadow: 4px 4px #0004;
+      }
+
       h2 {
         margin: 0;
         font-size: 30px;
-        padding: 20px 0 20px 0;
-      }
-
-      h3 {
-        margin: 0;
-        font-size: 24px;
+        line-height: 55px;
         padding: 0;
+        text-shadow: 3px 3px #0004;
       }
 
       p {
-        font-size: 24px;
+        font-size: var(--button-input-label-font-size);
         font-weight: normal;
-        line-height: 30px;
         padding: 0 80px;
         margin: 0;
         text-align: justify;
+        text-shadow: 2px 2px #0004;
       }
 
       #cursor {
@@ -179,6 +184,7 @@
         border-radius: 4px;
         top: 0;
         z-index: 2;
+        box-shadow: 4px 4px 1px #0002;
       }
 
       .player_header {
@@ -201,8 +207,10 @@
 
       .big_btn {
         height: 56px;
-        padding: 0 30px 0 30px;
+        padding: 0 24px 0 24px;
         font-size: 26px;
+        box-shadow: 4px 4px 1px #0002;
+
         border: var(--button-border);
       }
 
@@ -291,6 +299,10 @@
       .adjust_input {
         width: 120px;
         margin: 0 2px;
+      }
+
+      .history_label {
+        text-shadow: 3px 3px #0004;
       }
 
       .history_date {
@@ -433,10 +445,10 @@
             <div id="history_panel" class="center hidden">
               <div id="history_entries">
                 <div>
-                  <label class="hud_label history_date">Date</label>
-                  <label class="hud_label history_duration">Duration</label>
-                  <label class="hud_label history_rounds">Rounds</label>
-                  <label class="hud_label history_players">Players & Scores</label>
+                  <label class="hud_label history_label history_date">Date</label>
+                  <label class="hud_label history_label history_duration">Duration</label>
+                  <label class="hud_label history_label history_rounds">Rounds</label>
+                  <label class="hud_label history_label history_players">Players & Scores</label>
                 </div>
                 <hr class="history_hr">
                 <!-- Content will be generated here -->
@@ -1517,8 +1529,10 @@
     canvas.width = TILE_SIZE * NUM_TILES;
     canvas.height = TILE_SIZE * NUM_TILES;
 
+    const randomRGB = () => ((Math.random() < 0.5) ? '3' : '9')
     // Clear canvas
-    context.fillStyle = ('#393');
+    // context.fillStyle = ('#393');
+    context.fillStyle = (`#${randomRGB()}${randomRGB()}${randomRGB()}`);
     context.fillRect(0, 0, 2048, 2048);
 
     context.globalAlpha  = 0.1; // Set alpha so tiles appear to be a little brighter than the background color
