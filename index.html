@@ -16,9 +16,9 @@
         --button-hover-background: #06f;
         --button-hover-border: 2px solid #38f;
         --button-hover-color: #eee;
-        
-        --button-active-background: #39f;
-        --button-active-border: 2px solid #5bf;
+
+        --button-active-background: #6af;
+        --button-active-border: 2px solid #acf;
         --button-active-color: #fff;
 
         --button-disabled-background: #666;
@@ -35,9 +35,16 @@
         font-weight: bold;
         color: #eee;
         outline: 0;
+
+        cursor: none;
+      }
+
+      html {
+        cursor: none;
       }
 
       body {
+        cursor: none;
         margin: 0;
         padding: 0;
         overflow: hidden;
@@ -55,6 +62,7 @@
         padding: 0 20px;
         text-align: center;
         text-transform: capitalize;
+        caret-color: #fff;
       }
 
       label {
@@ -70,7 +78,6 @@
         text-align: center;
         padding: 0 10px 0 10px;
         border-radius: 5px;
-        cursor: pointer;
         background-color: var(--button-background);
         border: var(--button-border);
         color: var(--button-color);
@@ -94,10 +101,6 @@
         color: var(--button-disabled-color);
       }
 
-      button:disabled:hover {
-        cursor:not-allowed;
-      }
-
       h2 {
         margin: 0;
         font-size: 30px;
@@ -119,17 +122,11 @@
         text-align: justify;
       }
 
-      ::-webkit-scrollbar {
-        width: 10px;
-        background: #282;
-      }
-
-      ::-webkit-scrollbar-thumb {
-        background: #5b5;
-      }
-
-      ::-webkit-scrollbar-corner {
-        background: #282;
+      #cursor {
+        position: absolute;
+        cursor: none;
+        pointer-events: none;
+        z-index: 3;
       }
 
       #view_panel {
@@ -147,13 +144,41 @@
 
       #content_panel {
         grid-area: 2 / 1 / 3 / 2;
-        overflow-y: scroll;
+        overflow-y: hidden;
         scrollbar-color: #5b5 #282;
         scrollbar-width: thin;
       }
 
       #footer_panel {
         grid-area: 3 / 1 / 4 / 2;
+      }
+
+      #scroll_wrapper {
+        overflow: hidden;
+        width: 100%;
+        height: 100%;
+        position: relative;
+        z-index: 1;
+        float: left;
+      }
+
+      #scroll_content {
+        height: 100%;
+        width: calc(100% + 18px);
+        padding: 0 0 0 0;
+        position: relative;
+        overflow-x: auto;
+        overflow-y: scroll;
+        box-sizing: border-box;
+      }
+
+      #scroll_bar {
+        position: relative;
+        background: #8d8;
+        width: 26px;
+        border-radius: 4px;
+        top: 0;
+        z-index: 2;
       }
 
       .player_header {
@@ -251,7 +276,21 @@
       }
 
       .misdeal_button {
+        margin-right: 20px;
+      }
+
+      .adjust_button {
         margin-left: 20px;
+      }
+
+      .adjust_btn {
+        float: none;
+        margin: 0 2px;
+      }
+
+      .adjust_input {
+        width: 120px;
+        margin: 0 2px;
       }
 
       .history_date {
@@ -275,10 +314,12 @@
       }
 
     </style>
-  
+
   </head>
   
-  <body>
+  <body oncontextmenu="return false;" ondragstart="return false;" ondrop="return false;">
+    <img id="cursor">
+
     <!-- Truchet tile -->
     <img id="tile" class="hidden" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAABmJLR0QA/wCIAIg/Yj3ZAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH5wcaARwomBF14QAAAB1pVFh0Q29tbWVudAAAAAAAQ3JlYXRlZCB3aXRoIEdJTVBkLmUHAAABfUlEQVR42u3dQQHAQBCEsGn9e94TQtCQP7u7m7L92wZBHAAEAEAAAAQAQAAABABAAAAEAEAAAAQAQAAABABAAAAEAEAAAAQAQAAABABAAAAEAEAAAAQAQAAABABAAAAEAEAAAAQAQAAABABAAAAEAEAAAAQAQAAABABAAAAEAEAAAAQAQAAABABAAAAEAEAAAAQAQAAABABAAAAEAEAAAAQAQAAABABAAAAEAEAAAAQAQAAABABAAAAEAEAAAAQAQAAABABAAAAEAEAAAAQAQAAABABAAAAEAEAAAAQAQAAABABAAAAEAEAAAAQAQAAABABAAEAdAQBxBADEEQAQRwBAHAEAcQQAxBEAEEcAQBwBAHEEAMQRABBHAEAcAQBxBADEEQAQRwBAHAEAcQQAxBEAEEcAQBwBAHEEAMQRABBHAEAcAQBxBADEEQAQRwBAHAEAcQQAxBEAEEcAQBwBAHEEAMQRABBHAEAcAQBxBADEEQAQRwBAHMFX36fXe6dZ/w3fdap0AAAAAElFTkSuQmCC">
 
@@ -287,209 +328,314 @@
       <!-- Sticky header to ALWAYS show important game information like player names, etc -->
       <div id="header_panel" class="panel"></div>
 
-    <!-- The main game display container -->
-    <div id="content_panel">
+      <!-- The main game display container -->
+      <div id="content_panel">
 
-      <div id="title_panel" class=" center">
-        <h1>Up & Down The River</h1>
-      </div>
+        <div id="scroll_wrapper">
+          <div id="scroll_content">
 
-      <!-- Main menu panel -->
-      <div id="new_game_panel" class="center">
-        <button class="big_btn" onclick="startNewGame();">Start New Game</button>
-        <button class="big_btn" onclick="showRules(true);">How To Play</button>
-        <!-- <button class="big_btn" onclick="showSettings(true);">Settings</button><br><br> -->
-        <button class="big_btn" onclick="showAbout(true);">About</button>
-        <button class="big_btn" onclick="showHistory(true);">History</button>
-        <br><br>
-      </div>
+            <div id="title_panel" class=" center">
+              <h1>Up & Down The River</h1>
+            </div>
+  
+            <!-- Main menu panel -->
+            <div id="new_game_panel" class="center">
+              <button class="big_btn" onclick="startNewGame();">Start New Game</button>
+              <button class="big_btn" onclick="showRules(true);">How To Play</button>
+              <button class="big_btn" onclick="showAbout(true);">About</button>
+              <button class="big_btn" onclick="showHistory(true);">History</button><br><br>
+            </div>
+  
+            <!-- Game rules panel -->
+            <div id="rules_panel" class="hidden">
+              <br>
+              <p>
+                Up and Down the River is a social card game best enjoyed after dinner with good friends, easy listening music, and a few beverages of your choice.<br><br>
+  
+                The game is played in rounds, with each round consisting of a number of tricks. The game style is similar to the well known card game <a href="https://en.wikipedia.org/wiki/Euchre" target="_blank">Euchre</a>.<br><br>
+                
+                When playing "up the river" the number of cards dealt to each player increases from one card in the first round, to the number of cards chosen as the length of the river in the last round.<br><br>
+                
+                Then the game is played back "down the river" starting with the maximum number of cards, to one card in the last round.<br><br>
+                
+                You should be able to see where the name "Up and Down the River" comes from now.<br><br>
+  
+                Please note that this game is one of many variants of the "Up and Down the River" card game. If it wasn't what you were expecting, or you don't like it, well maybe you should just "Go Fish" instead ¯\_(ツ)_/¯<br><br>
+              </p>
+              <h2 class="center">How to Play</h2><br>
+              <p>
+                To determine the dealer the deck is shuffled and cards are dealt one at a time face up to all players in order until a Jack is dealt. The player to whom the jack was dealt is the dealer.<br><br>
+  
+                Once the dealer is determined, enter into the application the number of players and length of the river. Then enter the names of the players starting with the dealer and proceeding clockwise after that.<br><br>
+                
+                The dealer gathers and shuffles the deck, and then deals the required number of cards for the round to each player.<br><br>
+                
+                The dealer then turns the next card in the deck face up, and this card denotes the trump suit.<br><br>
+                
+                When played, a trump card "trumps" (or beats) any other card of any other suit, no matter what that cards face value is. For example, if Hearts are trumps then the Jack of Hearts (known as the left bower) is the highest card in the game, followed by the Jack of Diamonds (known as the right bower), then the Ace of Hearts,King of Hearts, and so on.<br><br>
+                
+                As in Euchre, players must follow suit if they have that suit.<br><br>
+                
+                With the trump suit established, each player examines their cards and determines how many tricks they think they can claim in the current round. This number is entered into the application.<br><br>
+                
+                The last player to claim tricks is the dealer where an important caveat applies<br><br>
+  
+                The number of tricks called cannot be equal to the number of tricks in the round, therefore the dealer must call in a way to make this so.<br><br>
+                    
+                &emsp;- Example, if in round 7, 6 tricks are called the dealer cannot call 1 trick.<br>
+                &emsp;- Example, if in round 7, 7 tricks are called the dealer cannot pass and must call at least 1 trick.<br><br>
+                
+                Once all players have informed the keeper how many tricks they hope to claim, the round begins with the lead player (the person to the left of the dealer) laying down a card from their hand.<br><br>
+  
+                NOTE: During play, The dealer is highlighted with a blue border, and the lead player is highlighted with a green border.<br><br>
+  
+                As mentioned previously player must follow suit.<br><br>
+                
+                If a player cannot follow suit then they are free to play any card in their hand.<br><br>
+                
+                Once all players have laid down a card, the winner of the round is determined and they claim the trick.<br><br>
+                
+                The winner of the trick now becomes the lead player and the round continues as described above, until all tricks have been claimed.<br><br>
+                
+                Once a round is complete, players are awarded points according to how many tricks they claimed versus how many tricks they actually took.<br><br>
+                
+                If a player takes the number of tricks that they claimed then they are awarded 10 points and an additional 1 point for each trick they took.<br><br>
+                
+                If a player claims 0 tricks and they take 0 zero tricks then they are awarded 5 points<br><br>
+                
+                If a player does not take the number of tricks they claimed then they are not awarded any points.<br><br>
+                
+                Once all rounds have been played the winner is the player with the most accumulated points.<br><br>
+  
+              </p>
+  
+              <div class="center">
+                <button class="big_btn" onclick="showRules(false);">Okay</button><br><br><br><br><br>
+              </div>
+  
+            </div>
+  
+            <!-- Game credits panel -->
+            <div id="about_panel" class="center hidden">
+              <br>
+              <h2>Up and Down the River version 2.0</h2>
+              <h2>(c) 2023 Cliff Earl, <a href="https://github.com/Antix-Development" target="_blank">Antix Development</a>.</h2>
+              <h2>Created using MicroSoft <a href="https://code.visualstudio.com/" target="_blank">Visual Studio Code</a></h2><br>
+              <h2>Scrollbar code inspired by <a href="https://github.com/buzinas/simple-scrollbar" target="_blank">Simple Scrollbar</a></h2><br>
+              <br>
+              <div class="center">
+                <button class="big_btn" onclick="window.open('https://www.buymeacoffee.com/antixdevelu', '_blank');">Buy Cliff a Coffee</button><br><br>
+                <button class="big_btn" onclick="showAbout(false);">Okay</button>
+              </div>
+            </div>
+  
+            <!-- History panel -->
+            <div id="history_panel" class="center hidden">
+              <div id="history_entries">
+                <div>
+                  <label class="hud_label history_date">Date</label>
+                  <label class="hud_label history_duration">Duration</label>
+                  <label class="hud_label history_rounds">Rounds</label>
+                  <label class="hud_label history_players">Players & Scores</label>
+                </div>
+                <hr class="history_hr">
+                <!-- Content will be generated here -->
+              </div>
+              <div class="center">
+                <br>
+                <button class="big_btn" onclick="showHistory(false);">Okay</button>
+              </div>
+            </div>
+  
+            <!-- Player count panel -->
+            <div id="player_count_panel" class="center hidden margin-top">
+              <h2 id="player_count_label"></h2>
+              <button class="big_btn" onclick="setPlayerCount(2);">2</button>
+              <button class="big_btn" onclick="setPlayerCount(3);">3</button>
+              <button class="big_btn" onclick="setPlayerCount(4);">4</button>
+              <button class="big_btn" onclick="setPlayerCount(5);">5</button>
+              <button class="big_btn" onclick="setPlayerCount(6);">6</button>
+            </div>
+  
+            <!-- Set river length panel -->
+            <div id="river_length_panel" class="center hidden margin-top">
+              <h2>And how long will the river be?</h2>
+              <button id="river_length_button_1" class="big_btn" onclick="setRiverLength(1);">1</button>
+              <button id="river_length_button_2" class="big_btn" onclick="setRiverLength(2);">2</button>
+              <button id="river_length_button_3" class="big_btn" onclick="setRiverLength(3);">3</button>
+              <button id="river_length_button_4" class="big_btn" onclick="setRiverLength(4);">4</button>
+              <button id="river_length_button_5" class="big_btn" onclick="setRiverLength(5);">5</button>
+              <button id="river_length_button_6" class="big_btn" onclick="setRiverLength(6);">6</button>
+              <button id="river_length_button_7" class="big_btn" onclick="setRiverLength(7);">7</button>
+              <button id="river_length_button_8" class="big_btn" onclick="setRiverLength(8);">8</button>
+              <button id="river_length_button_9" class="big_btn" onclick="setRiverLength(9);">9</button>
+              <button id="river_length_button_10" class="big_btn" onclick="setRiverLength(10);">10</button>
+            </div>
+  
+            <!-- Main player panels -->
+            <div id="player_panels" class="panel">
+              <!-- Contets are generated in app.js -->
+            </div>
+  
+            <!-- Entering player names panel -->
+            <div id="entering_player_names_panel" class="center hidden margin-top">
+              <h2>Enter player names</h2>
+              <button class="big_btn" onclick="playerNamesEntered();">Continue</button>
+            </div>
+  
+            <!-- Error label -->
+            <h2 id="end_round_error_label" class="error center hidden">Available tricks exceeded, review claims.</h2>
 
-      <!-- Game rules panel -->
-      <div id="rules_panel" class="hidden">
-        <br>
-        <p>
-          Up and Down the River is a social card game best enjoyed after dinner with good friends, easy listening music, and a few beverages of your choice.<br><br>
-
-          The game is played in rounds, with each round consisting of a number of tricks. The game style is similar to the well known card game <a href="https://en.wikipedia.org/wiki/Euchre" target="_blank">Euchre</a>.<br><br>
-          
-          When playing "up the river" the number of cards dealt to each player increases from one card in the first round, to the number of cards chosen as the length of the river in the last round.<br><br>
-          
-          Then the game is played back "down the river" starting with the maximum number of cards, to one card in the last round.<br><br>
-          
-          You should be able to see where the name "Up and Down the River" comes from now.<br><br>
-
-          Please note that this game is one of many variants of the "Up and Down the River" card game. If it wasn't what you were expecting, or you don't like it, well maybe you should just "Go Fish" instead ¯\_(ツ)_/¯<br><br>
-        </p>
-        <h2 class="center">How to Play</h2><br>
-        <p>
-          To determine the dealer the deck is shuffled and cards are dealt one at a time face up to all players in order until a Jack is dealt. The player to whom the jack was dealt is the dealer.<br><br>
-
-          Once the dealer is determined, enter into the application the number of players and length of the river. Then enter the names of the players starting with the dealer and proceeding clockwise after that.<br><br>
-          
-          The dealer gathers and shuffles the deck, and then deals the required number of cards for the round to each player.<br><br>
-          
-          The dealer then turns the next card in the deck face up, and this card denotes the trump suit.<br><br>
-          
-          When played, a trump card "trumps" (or beats) any other card of any other suit, no matter what that cards face value is. For example, if Hearts are trumps then the Jack of Hearts (known as the left bower) is the highest card in the game, followed by the Jack of Diamonds (known as the right bower), then the Ace of Hearts,King of Hearts, and so on.<br><br>
-          
-          As in Euchre, players must follow suit if they have that suit.<br><br>
-          
-          With the trump suit established, each player examines their cards and determines how many tricks they think they can claim in the current round. This number is entered into the application.<br><br>
-          
-          The last player to claim tricks is the dealer where an important caveat applies<br><br>
-
-          The number of tricks called cannot be equal to the number of tricks in the round, therefore the dealer must call in a way to make this so.<br><br>
-              
-          &emsp;- Example, if in round 7, 6 tricks are called the dealer cannot call 1 trick.<br>
-          &emsp;- Example, if in round 7, 7 tricks are called the dealer cannot pass and must call at least 1 trick.<br><br>
-          
-          Once all players have informed the keeper how many tricks they hope to claim, the round begins with the lead player (the person to the left of the dealer) laying down a card from their hand.<br><br>
-
-          NOTE: During play, The dealer is highlighted with a blue border, and the lead player is highlighted with a green border.<br><br>
-
-          As mentioned previously player must follow suit.<br><br>
-          
-          If a player cannot follow suit then they are free to play any card in their hand.<br><br>
-          
-          Once all players have laid down a card, the winner of the round is determined and they claim the trick.<br><br>
-          
-          The winner of the trick now becomes the lead player and the round continues as described above, until all tricks have been claimed.<br><br>
-          
-          Once a round is complete, players are awarded points according to how many tricks they claimed versus how many tricks they actually took.<br><br>
-          
-          If a player takes the number of tricks that they claimed then they are awarded 10 points and an additional 1 point for each trick they took.<br><br>
-          
-          If a player claims 0 tricks and they take 0 zero tricks then they are awarded 5 points<br><br>
-          
-          If a player does not take the number of tricks they claimed then they are not awarded any points.<br><br>
-          
-          Once all rounds have been played the winner is the player with the most accumulated points.<br><br>
-        </p>
-        <div class="center">
-          <button class="big_btn" onclick="showRules(false);">Okay</button><br><br>
-        </div>
-      </div>
-
-      <!-- Game credits panel -->
-      <div id="about_panel" class="center hidden">
-        <br>
-        <h2>Up and Down the River version 2.0</h2>
-        <h2>(c) 2023 Cliff Earl, <a href="https://github.com/Antix-Development" target="_blank">Antix Development</a>.</h2>
-        <h2>Created using MicroSoft <a href="https://code.visualstudio.com/" target="_blank">Visual Studio Code</a></h2><br>
-        <br>
-        <div class="center">
-          <button class="big_btn" onclick="window.open('https://www.buymeacoffee.com/antixdevelu', '_blank');">Buy Cliff a Coffee</button><br><br>
-          <button class="big_btn" onclick="showAbout(false);">Okay</button>
-        </div>
-      </div>
-
-      <!-- Settings panel -->
-      <div id="settings_panel" class="center hidden">
-
-        <!-- TODO: Add settings controls -->
-
-        <div class="center">
-          <button class="big_btn" onclick="showSettings(false);">Okay</button>
-        </div>
-      </div>
-      
-      <!-- History panel -->
-      <div id="history_panel" class="center hidden">
-        <!-- <h1>Hall of Fame (and shame)</h1> -->
-        <div id="history_entries">
-          <div>
-            <label class="hud_label history_date">Date</label>
-            <label class="hud_label history_duration">Duration</label>
-            <label class="hud_label history_rounds">Rounds</label>
-            <label class="hud_label history_players">Players & Scores</label>
           </div>
-          <hr class="history_hr">
-          <!-- Content will be generated here -->
         </div>
-        <div class="center">
-          <br>
-          <button class="big_btn" onclick="showHistory(false);">Okay</button>
+
+        <div id="scroll_bar" class="hidden"></div>
+
+      </div>
+
+      <!-- Footer panel (game round controls) -->
+      <div id="footer_panel" class="center margin-top">
+        
+        <!-- Adjust player score panel -->
+        <div id="adjust_score_panel" class="center hidden margin-top">
+          <h2>Adjust Player Score</h2>
+          <div id="adjust_buttons_panel" class="center"></div>
+          <br><br><br>
         </div>
+        
+        <!-- Player Bid for tricks panel -->
+        <div id="player_bidding_panel" class="center hidden margin-top">
+          <h2 id="bid_label"></h2>
+          <button id="trick_button_0" class="big_btn" onclick="claimTricks(0);">0</button>
+          <button id="trick_button_1" class="big_btn" onclick="claimTricks(1);">1</button>
+          <button id="trick_button_2" class="big_btn" onclick="claimTricks(2);">2</button>
+          <button id="trick_button_3" class="big_btn" onclick="claimTricks(3);">3</button>
+          <button id="trick_button_4" class="big_btn" onclick="claimTricks(4);">4</button>
+          <button id="trick_button_5" class="big_btn" onclick="claimTricks(5);">5</button>
+          <button id="trick_button_6" class="big_btn" onclick="claimTricks(6);">6</button>
+          <button id="trick_button_7" class="big_btn" onclick="claimTricks(7);">7</button>
+          <button id="trick_button_8" class="big_btn" onclick="claimTricks(8);">8</button>
+          <button id="trick_button_9" class="big_btn" onclick="claimTricks(9);">9</button>
+          <button id="trick_button_10" class="big_btn" onclick="claimTricks(10);">10</button>
+          <button id="misdeal_button_0" class="big_btn right misdeal_button" onclick="misdeal();">Misdeal</button>
+          <button id="adjust_score_button_0" class="big_btn left adjust_button" onclick="showAdjustScorePanel(true);">Adjust</button>
+        </div>
+
+        <!-- End round panel -->
+        <div id="end_round_panel" class="center hidden margin-top">
+          <h2>Did the players claim their tricks or not.</h2>
+          <button id="end_round_button" class="big_btn" onclick="confirmEndRound();">Continue</button>
+          <button id="misdeal_button_1" class="big_btn right misdeal_button" onclick="misdeal();">Misdeal</button>
+          <button id="adjust_score_button_1" class="big_btn left adjust_button" onclick="showAdjustScorePanel(true);">Adjust</button>
+        </div>
+
+        <!-- End game panel -->
+        <div id="end_game_panel" class="center hidden margin-top">
+          <h1 id="winner_label"></h1>
+          <button class="big_btn" onclick="location.reload();">Play Again</button><br><br>
+        </div>
+
       </div>
-
-      <!-- Player count panel -->
-      <div id="player_count_panel" class="center hidden margin-top">
-        <h2 id="player_count_label"></h2>
-        <button class="big_btn" onclick="setPlayerCount(2);">2</button>
-        <button class="big_btn" onclick="setPlayerCount(3);">3</button>
-        <button class="big_btn" onclick="setPlayerCount(4);">4</button>
-        <button class="big_btn" onclick="setPlayerCount(5);">5</button>
-        <button class="big_btn" onclick="setPlayerCount(6);">6</button>
-      </div>
-
-      <!-- River length panel -->
-      <div id="river_length_panel" class="center hidden margin-top">
-        <h2>And how long will the river be?</h2>
-        <button id="river_length_button_1" class="big_btn" onclick="setRiverLength(1);">1</button>
-        <button id="river_length_button_2" class="big_btn" onclick="setRiverLength(2);">2</button>
-        <button id="river_length_button_3" class="big_btn" onclick="setRiverLength(3);">3</button>
-        <button id="river_length_button_4" class="big_btn" onclick="setRiverLength(4);">4</button>
-        <button id="river_length_button_5" class="big_btn" onclick="setRiverLength(5);">5</button>
-        <button id="river_length_button_6" class="big_btn" onclick="setRiverLength(6);">6</button>
-        <button id="river_length_button_7" class="big_btn" onclick="setRiverLength(7);">7</button>
-        <button id="river_length_button_8" class="big_btn" onclick="setRiverLength(8);">8</button>
-        <button id="river_length_button_9" class="big_btn" onclick="setRiverLength(9);">9</button>
-        <button id="river_length_button_10" class="big_btn" onclick="setRiverLength(10);">10</button>
-      </div>
-
-      <!-- Player panels -->
-      <div id="player_panels" class="panel">
-      </div>
-
-      <div id="entering_player_names_panel" class="center hidden margin-top">
-        <h2>Enter player names</h2>
-        <button class="big_btn" onclick="playerNamesEntered();">Continue</button>
-      </div>
-
-      <h2 id="end_round_error_label" class="error center hidden">Available tricks exceeded, review claims.</h2>
-
-    </div>
-
-    <div id="footer_panel" class="center margin-top">
-      
-      <div id="player_bidding_panel" class="center hidden margin-top">
-        <h2 id="bid_label"></h2>
-        <button id="trick_button_0" class="big_btn" onclick="claimTricks(0);">0</button>
-        <button id="trick_button_1" class="big_btn" onclick="claimTricks(1);">1</button>
-        <button id="trick_button_2" class="big_btn" onclick="claimTricks(2);">2</button>
-        <button id="trick_button_3" class="big_btn" onclick="claimTricks(3);">3</button>
-        <button id="trick_button_4" class="big_btn" onclick="claimTricks(4);">4</button>
-        <button id="trick_button_5" class="big_btn" onclick="claimTricks(5);">5</button>
-        <button id="trick_button_6" class="big_btn" onclick="claimTricks(6);">6</button>
-        <button id="trick_button_7" class="big_btn" onclick="claimTricks(7);">7</button>
-        <button id="trick_button_8" class="big_btn" onclick="claimTricks(8);">8</button>
-        <button id="trick_button_9" class="big_btn" onclick="claimTricks(9);">9</button>
-        <button id="trick_button_10" class="big_btn" onclick="claimTricks(10);">10</button>
-        <button class="big_btn left misdeal_button" onclick="misdeal();">Misdeal</button>
-      </div>
-
-      <div id="end_round_panel" class="center hidden margin-top">
-        <h2>Did the players claim their tricks or not.</h2>
-        <button id="end_round_button" class="big_btn" onclick="confirmEndRound();">Continue</button>
-        <button class="big_btn left misdeal_button" onclick="misdeal();">Misdeal</button>
-      </div>
-
-      <div id="end_game_panel" class="center hidden margin-top">
-        <h1 id="winner_label"></h1>
-        <button class="big_btn" onclick="location.reload();">Play Again</button><br><br>
-      </div>
-
-    </div>
 
     </div>
 
   </body>
 
   <script>
+  
+    let 
+    scrolling,
+    scrollY,
+    scrollBar,
+    scrollRatio,
+    scrollContainer,
+    scrollWrapper,
+    scrollContent;
+
+    const 
+    updateScrollbar = (e, forceVisible = false) => {
+      const 
+      totalHeight = scrollContent.scrollHeight, // Height of total scroll area
+      ownHeight = scrollContent.clientHeight; // Height of visible scroll area
+
+      scrollRatio = ownHeight / totalHeight;
+
+      if(scrollRatio >= 1) {
+        scrollBar.classList.add('hidden'); // No need for scrollbar to be visible
+
+      } else {
+        forceVisible = true; // Force visible and set styling
+      }
+
+      if (forceVisible) {
+        scrollBar.classList.remove('hidden');
+        scrollBar.style.cssText = `height: ${Math.max(scrollRatio * 100, 10)}%; top:${(scrollContent.scrollTop / totalHeight ) * 100}%; left: ${scrollContainer.clientWidth - (scrollBar.clientWidth + 8)}px;`;
+      }
+    },
+
+    initScrollbar = () => {
+
+      onMouseMove = (e) => {
+        var delta = e.pageY - scrollY;
+        scrollY = e.pageY;
+        scrollContent.scrollTop += delta / scrollRatio;
+      },
+
+      onMouseUp = (e) => {
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+        scrolling = false;
+        cursorImageName = 'arrow';
+      },
+
+      // Mouse entered the inner area of the scroll bar
+      onMouseEnter = (e) => {
+        if (!scrolling) {
+          e.preventDefault();
+          cursorImageName = 'scroll';
+          setCursorImage();
+          setCursorPosition(e);
+        }
+      },
+
+      // Mouse left the inner area of the scroll bar
+      onMouseLeave = (e) => {
+        if (!scrolling) {
+          e.preventDefault();
+          cursorImageName = 'arrow';
+          setCursorImage();
+          setCursorPosition(e);
+        }
+      };
+
+      scrollContainer = getByID('content_panel');
+      scrollContent = getByID('scroll_content');
+      scrollBar = getByID('scroll_bar');
+
+      scrollBar.addEventListener('mouseenter', onMouseEnter);
+      scrollBar.addEventListener('mouseleave', onMouseLeave);
+      scrollBar.addEventListener('mousedown', (e) => {
+        scrolling = true;
+        scrollY = e.pageY;
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', onMouseUp);
+        return false;
+      });
+
+      window.addEventListener('resize', updateScrollbar);
+      scrollContent.addEventListener('scroll', updateScrollbar);
+      scrollContent.addEventListener('mouseenter', updateScrollbar);
+    };
+
+    document.addEventListener('DOMContentLoaded', () => { initScrollbar(); });
+  </script>
+
+  <script>
     var 
+    roundHeaderLabel,
+
     round,
     rounds = [],
-    riverLength,
 
     playerCount,
     players = [],
@@ -500,17 +646,17 @@
 
     tricksClaimedByOtherPlayers,
 
-    roundHeaderLabel,
-
     roundDisplayPanel, // Appears on left side of display and shows which round is being played
-
-    historicEvents,
-    startDate,
 
     cachedRounds,
     cachedDealer,
 
-    misdealHappened;
+    selectedAdjustButton,
+    adjustAmountInput,
+    adjustAmount,
+
+    mouseDown,
+    cursorImageName = 'arrow';
 
     // Utility
     const 
@@ -519,16 +665,32 @@
     showElement = (el, state) => el.style.display = (state) ? 'block' : 'none',
     createElement = (type) => document.createElement(type),
     newLabel = (text) => { var label = createElement('label'); label.innerHTML = text; return label; },
+    clamp = (v, min, max) => (v < min ? min : v > max ? max : v),
+
+    HISTORY_FILENAME = 'com.antix.up_and_down_the_river_history',
+
+    HAND_IMAGE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFMAAABrCAMAAAA8RU7yAAAA51BMVEUAAAAzMzMzMzM0NDQzMzMzMzMvLy8zMzMzMzMyMjIzMzMzMzMyMjIyMjI0NDQzMzMzMzMzMzMzMzMyMjItLS0zMzMzMzMzMzMyMjIzMzMzMzMzMzMzMzMyMjIzMzM0NDQyMjIzMzP5+fkzMzOdnZ2pqal3d3fv7+90dHTExMR6enrU1NRdXV1/f385OTmQkJDq6uo/Pz81NTV8fHy+vr6GhoZPT0/z8/PZ2dlra2tXV1eamppmZmZKSkrLy8u1tbWWlpZvb29GRkbj4+Pd3d3Gxsatra2jo6OLi4u6urpUVFTR0dGTk5OdR+cdAAAAInRSTlMA0PoL1csR8+aplz5+UR3JwjPuYAa8j29X3bKMhmhLJ58s4dXAzAAAA+tJREFUaN7tmWtT2kAUhtMEELkVEBRaFeVFEC+BYLipqNRLre3//z09G2A2OyUNe2nHzvT5oonxmU1yztnNWSuS0m6yjHJi+8CxDFEqYsXWnhnljo0QGRPKPIjBba/VO/sCwsBInTJ52o/NgBcXKKe0nXuk/NFc8UJHO9rObWDU5NDtb2s7PwKnIecZkDDt7FE8mXbeALZpZ8uQsy06Ydr59b06k6LzhJyVP+B0/hFn6r/z3b+jd+n88HfGmctkMrnDlMFxrrCrNQ3nmejkfCwZcw5mo9lgMdaaKecz/RzfDT0Qh4acy0VJ/wxAunawt3NYqug6O3xiXmEn9xsmnISLENWSEacHgV0TzhEw7TT7T/6Pi8VQK/rOC76gmFyx8DqyLKfQKBUcE07imT2J+hYC0ke1iraT+O4iTD2r7SSmELB3DDgfAAxP7v3ut5O2x6RZfWcXwPny984rHXyIdF4pOIkhHWUNO/su/5py8rnP+/mChpO/smTgKB0tI6yaD44Tik6+9q/sgvPh+Fdndz6fj2Oc4tq/8gkMd+aCYe9xp4CM8zObGdo+y4lFGd/XcbaY89gGvOfVa2uDyJHzMtJ532r5v3XCygDo8nMvrNJsMWcs0eOsA1NhGEyq5OTPE0BLuKin5Xygu2TOr8JF42sdJ42obKXFekF8k3L2fd/vCM40+1b3+uJlb9wpzStz5knwKp7vaTiHQD1ImkFXOH+n56T+QZYM3nn4fEfDeRk4LVZCvjyF/+CpO6+WhZ4Vkdlj+AZOT08Une1l/XSKJB31myaYA8VFlU+S9M2I9Bb4ZAWkEiS9NiG95r2oQp2ktwaco1DHsJDWCCCxZ/bZWtEo82qigQvk+KSetYGBryzj6XIQ7qOyhJroOZ/IkefKxWw303v5d8LaZpVQUy3nPRkKgtNhYaqWldGf0I0twJV+pDFtzQOWT2N15+m69us2SYfqzrd1beIUy6eukZAXQ3+kevcTADXuEqL0QdrGp/HjNU6H7t59VJ6J7UrUxsSlcvUsWmspAoOJarbn1juzqvH0IDxOkSrgdRScMzYRR5BXS3s/KJ5RpClD5Z1TSvZUpDMH4E5W2R+w/kAkBRvoSdc5Xo+jwmmksFxIx+10TWRvPWYzsEDOG/lpIxvXZrmVXiWWrd+yC7hyFS9+1y4vG03n8buLqeBbTIIWn4UjSQBtyUhKxO5xyqVnx41vB7L0dOXqR3z/tiYX9T3AduKcJbk5+UKcNaJf/MvGyrHLeh6x2DJT8vNm7fC0zKR0E7vFxJthmzKNiU5eQucbO72YOscXzaPWhvR4ssckkhyNDZwZGeGGu/77cs4q/8+fDpriURbcuPIAAAAASUVORK5CYII=',
+    HAND2_IMAGE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFMAAABrCAMAAAA8RU7yAAAA4VBMVEUAAAAzMzMzMzMyMjIzMzMzMzMzMzMzMzMzMzMyMjI0NDQzMzM0NDQzMzMyMjIzMzMyMjIyMjIyMjIzMzMyMjIzMzMxMTEzMzMzMzMzMzMzMzMzMzM0NDQ0NDQ0NDQ1NTUyMjIyMjL5+fkzMzOdnZ17e3upqanGxsbv7+90dHTU1NR4eHhdXV05OTl/f3+Tk5M/Pz+GhoZWVla+vr5ubm7z8/Pr6+vb29uamppPT09LS0umpqaPj49qamro6Oitra3j4+O5ubm0tLSLi4tlZWVGRkbY2NjQ0NDLy8vCwsKhoaEQG/W+AAAAInRSTlMA0cxQ+PPt245+BZcNwaHjqmi7YFczEwqzh3BFOi0nIBo+IL0jwQAAA8RJREFUaN7tmddW6kAUQKmBBBCQpkgzBwSMGKpItbf7/x90zyRwJwgkmfJwXcv9oMYstySnzMkk8Msvv/wwKvGQAkosk03KMlZTsCWalaPMRcDBiQxlGAivy6ZpvAFSFlcmFfQYj7rFQw9AKQo7y6g09S0PeJQTdmYAZjoFLz8j7AwBdHWKARCU7TQxn2Q77wEisp1NDNL/6jR0yhU6kz/EqSYSCTXckOnccpqX7kRCBXnO+XxuSyN5Wc42fp98DvqAXHA6W9+cm8a3buHPSj5bzoULmqizsz1YOm6tWpPhRHrg4NR3xIJuzj7sENckOGcAq46+no7MG/ujlsSdN7TBTFubVbVUrxXqJRlOpE3uRCwKFspJXhN2Ih89cBK7EHYiY9glJ8Fp4snB4nnUfloYVkpUxJ1tPHmt23Re8CAo1YkMSDuQ7LzDkCW2E1JYjZ+HG4JOZIVtwHIUTqKb8g1rIk46X2hxoISq+86v8Xg88eGk84V2BoTe3M7eSJk6nTA544AYX6Qm7DZ+zumk80UVv/Tb27AZgKjovD3qfG42Rx7OhL3Y0AEWiRKnGx7OGLbDnY8BCJeT3k/8VVN3suR00lwizj+6k8lQ0KkE0nsxfmJyrkejUcd5lejMYNjv9B2G1MkMdqa09Xj1ou9gCjgH2OuxaHaTCWkLOy9I0l/rDjoCzlvitIvzbao76PM7W6TRb5rI/NF5Ad3uFafT2PTPUgqls7UugzFAyu7yIZQO72Q4XwHOAhbFoCzpkO4gNGJAeok4M7LGbaVpmkAi9ElP31JTULoQdvYA1MA/LiMoHXHLaLlkA5QcLShupugIU6VdUHOx4H/uDWGkoMacNtp76zvOZFA0TgsUfJvBa1GA3juryGPrJEvqacLv7B6aPzMoHUgpTUqR1FNbSspTKqTvTQTSM09dO1lqCqRS9YAzmcbYP3KvxBHt2ObnLXeIUoGDpFD6zns71cPOCm8+mfR27nGKDarD4ZyTRfMIYb6yH9HmuY+GoR9yrcPR43twKv7HD1bl2n3XvYGnl6xO8ihwSR2H0mnG6lyRcdaFMluK0sdXF+rovGdzPntcujXpvjJPiYrm6oxjI2HrePTNgFvaf7Ior62Ed6VoPYsx0LRWYXdiAAbj4BkLeJBhK88OZlLcy6likBj7x4WXMw8AU//OJUCk5OUsoPPLv/OGrhrugX/wrZz0yHzsSYSlOtt07nQjzbIo3aOzyLRZ683K3+u1FMt82/foc3RonjV9Yvp8XXkCbNR8OBNsymjAB+dszlP6l38BpRHFrNXfXJEAAAAASUVORK5CYII=',
+    ARROW_IMAGE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADYAAABgCAMAAABhTHEFAAABJlBMVEUAAAAzMzMzMzMzMzMzMzMwMDAzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMyMjIxMTEzMzMsLCwzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMyMjIwMDAzMzMzMzMzMzMzMzMyMjIyMjIzMzMyMjIzMzMzMzM0NDQ3NzczMzM0NDT5+fkzMzM5OTk2Njb4+Pjy8vLh4eF+fn5ERETv7+9CQkLExMSWlpZ2dnY8PDzZ2dnLy8u+vr6jo6Ofn590dHRdXV1aWlpUVFRAQEDn5+fGxsa2traKior09PTd3d3Pz8/Dw8OampqEhIRqampOTk66urqurq56enpkZGRYWFhQUFBISEhGRkY4ODjs7OzT09Orq6upqamVlZWX6EfUAAAAL3RSTlMA9+fEYxXhuzT++4Ax85RN3o+IPRoIBdnKrJyMhXFdKxHRtCF4amdXVkA5Jwvudq0UmoMAAALKSURBVFjDnddnUxphGIXhFYJKC4oSioLYYzR5j4CgIsUWFCyxa0z9/38iDEw8rCDs4fnGy1w7z9wDLGutWEONb2ooBtf0UAzuyFAM74djeDccYxaJMYvAMoVmlg8y26z8YBaBmX1mUZjJM4vCckfMIjCzxSwKM8wiMWaRWCvLyLjKmEVizKIyc5phFoExi8CYRWDMMurRGLMojFkmdWYOmEVgzCKy3DGzCMxs7TCLwMwuswiMWURm9pjFKWMWhTHLmMSYZUZjzKKzLLMIjFkExiwaYxadmW8AUhpjFpmZ7a/M4pAxi8SYJSwxZlmVGLMENMYsEmMWnZlLZnHGmMW7qrPsIbM4Y8wy4ZGZOa81s0iMWWZ1ZoqA96PCmCU4JzFmSUuMWXRmqsxCJmQhE7IojFmi6QEs93j0cJhv/D34Xd+9KJ9sN4/KJWBhADOHsE2mdvNYQDPLAFZHz/GGerBsx5YlwJ/0zyTiY7GoK/ifNbN0sfK1/R6+ZHHSi4GpUGp5KZx8zSo7KPPVLTDv5B5Q3wQO7FuuD2b7GQBHhnMP+AexbLHd+YSsCswPYGf3ANxu4A9ZrgbM9WXb1wDikXdAZ8s84O/HTo7bz8QeHzI/bVtG+7DzG8Dbuq4bqJOd7QCBN9lFAfC1/70kgT37lrNvsWoJCIbaB4tAKUd2CUy8we4ygOtllXmgSnZW4JZ2VgQQXXw58QNXhnMFhHuw1sQ8PAkAhSzZKbd8zRY2Oo8mgApZ9hkY78kS9qNJoGHfcqabdX8M1oAbY9tytJv5VrrOXMAvsux34JP1akZCVtckgKLhNHo8FvA6nBBw3MEqgMtyMJEgvFv2LaecuDiwz+/c7ZPDR90U8NA22d18DXC4ZdrX/mm4aDyjNbFkxIkbA+7Kxae2GQ2vW85mGSi1jWty3HI8096W+ZxYs6SJASPxUMQS58tCaqPP2/8ANczOopW/5ZcAAAAASUVORK5CYII=',
+    CARET_IMAGE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACsAAABSCAMAAAD6rt37AAAArlBMVEUAAAAzMzMzMzMzMzM5OTkzMzMzMzMzMzMzMzMzMzM0NDQ3NzczMzMyMjIyMjIzMzMzMzMyMjIyMjIzMzMzMzMyMjIyMjIzMzMyMjIzMzM0NDQzMzMzMzMzMzP///8zMzOEhIRnZ2c1NTW2trb09PTo6Ojk5OTx8fG5ubmioqJhYWFaWlpNTU3v7++lpaWZmZlLS0uysrKdnZ1eXl5WVlZPT09KSkrCwsKpqamWlpYYNxUUAAAAHnRSTlMA8874BPDtSTU5MAn7UQzDvbWmnU5DuqlW1qigmg/Ceh47AAABG0lEQVRIx+zSVw4CMQwE0AXC0ntvHnrvnftfjCgsWJa1nGDnL9LTyEnsiRSqxlMpVjJ8YJpHyyhaQjKtaD0BoGoUhcWaju+MmW4BX+KUpZPdFWKMXBlYT1fczJRodgO6RlKiAEv6wT0jqM0B8LMBHfjAkMjhLVAzjjaBi6NEa6Dz7W3Y3pPAgr5cbyg2FWCzIPqOoC/nMj8CfUFdazhmehZU4/sfqpuvO3Lht9XfvAyworrZYc7eUrGSYi0F1lRjprGGF562xY8PfVoqWjX+rcZIUZUY27gX2chGNrLv9uuYBgAAhmEYf9aDEM13//51tt12W/zY/m41QVtDDdM2UnO15dSIbU8wbVr5a/CP7aUZukWkcbqdvMm69Q7UWpTNs0bp+AAAAABJRU5ErkJggg==',
+    DISABLED_IMAGE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAMAAADVRocKAAAAt1BMVEUAAAAzMzMzMzMzMzMzMzMzMzMzMzMyMjIyMjI0NDQyMjIzMzMzMzMzMzMyMjIzMzMzMzMzMzMzMzMzMzMvLy8zMzMzMzMzMzMzMzMzMzMzMzMzMzMyMjIyMjIzMzPdAAAzMzPaAQE2MTGXFBRRKSluICBALi6iERHRAwOyDQ1iJCSnEBA7MDBJLCx7HR2tDg7CCAjJBgbVAgJFLS1oIyO2Cwt2Hh6LGBhaJia8CgqEGhp/HByQFxdIikz0AAAAH3RSTlMA9eQeySpeVZYNNae8rhShj4hG3QbZgG5AnOrSZk14KT2vHQAABblJREFUaN7NmmmbmjAQgMEDKx67up6rXblEXcUDy3qs//93lYlChgQNhvZp51PrhjdkriQzKNmkORi3GqW3gmoYaqFbqvU0var8KSlqw67Bi1pq/az+AXq/ZDyQupZrjs44QV/tPed4dDzXwgupDWTx1Y9CRLGOZ3uxm0Ribjf2lxPPUapI4VuqcRXnEJiTFJkv1/vbkK72NF+7vb133k7uixms3dsq9Kfw+k33n5uJSEzbu4790czO710VPz1Nsog5u5qj0M4aVPWr6oNJZpldFfXaycJvv8NY1zYnT8h8bRFLFMX8sQHya56iiu1iZocyW2xTJg88oqZyJvVbNss+XX55KLwsZ2qz3uVPSdwJwu4Hcc1Tkr75co0U2X8zTmBbMMPDqBsS684T2j3sjbviJC21WMGPD2ZoEd/3Mf7botlz2OtXQun3Xkpq9Kt7wMNP+4da6sMTUxMp57C6wRtjxnr6Rz3S1Aw9sfNg9B1LV8j7o9GBc8vJlWpqvESZ/LhFM8AaCqneWlZhLF2web5q5+WB5w2uy7AOJtUSLLqUEnGdUdK+u6MB0hA49mBEZlgiS8N7tdIddEVT/nZP4uancMfrAn+W8FZ4kstLP+FXOi4gnl+rPs0HgYh7Z3JrFdL/F+WDItW+IsWf+OBKQz4CHD82lAv8thwfngcz6JwHLRKu9q5L8kHW4El4aAMiLPZP8B9Vgm/GiWMOKtBQWCY8aE3CXcx/Y/lfxiXegcK/vdGxtfC/h+hvGwNml+IbVhzTDs56RVhAFGI+GGAowZ+S9GqiJYxwjH1jBXU7UnwQO/q/R6OtqoZjIwtswcMG0nzDnaN4btAsOsVROJTk10pIFaYbuko19tENWoBalOR3dGzMr8hXmmq4MBNZoCXLJ+8au+oCdhIYr4X/WEcBsgoX0JTmk4Dam7efwR2B9QJZAlnmRcAv3OOD1AGGtAHp/i0cH2noE5KUFD86lKOkvITD5DXKjpGGQhMX8vCVKjLoHDLedc4zCr9XMX/J8ZNpM0Dpokp2gg3yrLYsnx5tDwinkyl3eMrn+KxXgMY/kctoyoja2LRAaVJ8Ku+ho6K83FNCqzhRGMPwnHziqHPKqylwGUB+9SHPp6k5wBoBx0U6q+TkKx/hr9EwF/YElADP952oLPAfKhraFDwIKwgDFNvl7Px0g/2EfEe9UlUYvy3n5CttBITjCZ2ArkDM/2XQfUkwgVBFYr5YRWvWyPJ83sism2rp/E1WvtLn3ZQPNHk+H2hcqsjE/4GGCFIFm+xGOflK+ISLkx2frvPxy1y6phsO3abl+YrGbTh4y1zC47n4/JbJb/q5+Pymzx9b2tJ8es6lxxbm4DWLU3D5neV/ivggddaizNHRh+trMeYvnuWX2aNjlT38fgNFkk/vYvTwyx3fd+T4Tvir5/k6vBZ3fOcvIHVJvlLnLiD8FQqWYKTyX4V8jbtCpV0Cz9L8Jiz8wl4C+WusJ8lX6uw1tpR+EV9I8ntg4VP0lJM4Y5WTpQQpfsXAbwkW6N4rhviBBL+t0q2RL4YoxUQ5R5bvzJlyDqNAx5fma8Dfx0oOaEGKKalJ8knF2N3GCvJoWPJFQSo+4beE+GKdFIC3iaJgoZla1txK8McqjHN2TFlTVJiFZAVS1zO1k6Y+U5h9orTc0B/gG2SIdZmwpeVMxfGTc+uRjZupuWecVhx3UXFcXN633StCrffLSYXq/ai879p8ef+JBsXZpQ2KF9Kg0Pq92t0GhSuoWA4jh6DiX7xHLRZf2GIRN4kmwXqf3iQKBE0iYZuLytaeOoI211zc5iKiPWjUBaRRt3zYqPv3rUaZZqkpbpby5QDQ05Pt3sFfaVj7Eg1rkErUcl+fcrfcxR8NLO59NODSjwbyfvbwzXz2cMn92QNIRysZSCw3/cON//jTk9scldfUSUqvleccR/z5T5d8/vM2ChN3JevnP78BwwBxMJAAnJoAAAAASUVORK5CYII=',
+    SCROLL_IMAGE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACMAAABQCAMAAACksTwEAAABC1BMVEUAAAA1NTUzMzMtLS00NDQzMzMzMzMzMzMzMzM0NDQzMzMzMzMzMzMzMzMyMjIzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMyMjIzMzMzMzMzMzMyMjI4ODg7OzszMzMzMzMzMzMzMzMzMzMyMjIyMjIzMzMwMDAzMzMzMzMzMzM1NTU1NTX///8zMzPg4OBra2u7u7tOTk5DQ0M2Njb+/v76+vrz8/N+fn7t7e3l5eXb29vJycmqqqqEhIRubm5kZGRVVVVGRkY6Ojr39/fn5+fT09POzs63t7eioqKTk5NaWlpLS0s9PT3p6enR0dHBwcGdnZ2YmJiNjY15eXl4eHhxcXFdXV1ISEjMxmJFAAAALXRSTlMAOswRmfz0kyEL+O7p46p1VUgxKhbZz8a7sYdsQAcE39W3jHxkYE0a5b2DNR0AQ5YZAAABtklEQVRIx+2W11byQBhFRyGGKqBY+FH87XW2hSDYsPfeff8n0TDIpPMAsu/mW/sqZ62cI3yYE6IbOdKJLsqCAaPJSGVoAGAwSlnMwh0wG65MjsHJ+QuQD3UG4fRC1t5hYDhE+QdcSSnrxzBVDFTmgWdps1uF8UqA0peChlRcWmD6lUQGjrZlmwNgzqsk/8PWjuzQBMMTSmUc7vekZvsIMmsuJw7WvnSyc+cJJQccSDd7p65QCga8Si+bQM4Z5GFN+rgBY0EpxSwc16Wf2sdvKMl+oLqlaKjv3H6dACMxFaRmo+Ws42BaBRnpMCNimoLDGXXcXak6nH6h6Tk9p+f0nD/hlOMdSg4no8/ln27r8u9NJ1RHRjhGQfwwBxxuKi5bTr39auo5YPoKTnbquSTaTEN13aec3apGUcRGgtrpzT0XhtP+lrvWs0O35Y1L2bdgxTuf4Epqzu05ITzE7c2i6/0TpmKB2+fh12lAasirqOq9PdNzIx+2xVTnPlp2QwaSB67tGfEFy5XwIWU9teZItijCKNnrpQmp1TBDraAqMC8iSKQBTBHJhAFjkyKaMkuLohtmn/fyDdOJ0UIZJ44zAAAAAElFTkSuQmCC',
+
+    cursorImage = getByID('cursor'),
 
     viewPanel = getByID('view_panel'),
     headerPanel = getByID('header_panel'),
     contentPanel = getByID('content_panel'),
     footerPanel = getByID('footer_panel'),
 
+    adjustScorePanel = getByID('adjust_score_panel'),
+    adjustButtonsPanel = getByID('adjust_buttons_panel'),
+      
     titlePanel = getByID('title_panel'),
-    settingsPanel = getByID('settings_panel'),
+
     historyPanel = getByID('history_panel'),
     historyEntries = getByID('history_entries'),
+
     newGamePanel = getByID('new_game_panel'),
     endGamePanel = getByID('end_game_panel'),
     playerCountPanel = getByID('player_count_panel'),
@@ -552,8 +714,12 @@
 
     maxRiverLengthByPlayerCount = [0, 10, 10, 10, 10, 10, 8, 7, 6], // Basically 52 cards / number = maximum length of river
 
-    SETTINGS_FILENAME = 'com.antix.up_and_down_the_river',
-    HISTORY_FILENAME = 'com.antix.up_and_down_the_river_history',
+    // Get the player with the given name
+    getPlayerByName = (name) => {
+      for (let i = 0; i < players.length; i++) {
+       if (players[i].name === name) return players[i];
+      }
+    },
 
     // User clicked the "New Game" button
     startNewGame = () => {
@@ -593,14 +759,14 @@
     setRiverLength = (length) => {
       showElement(riverLengthPanel, false); // Hide current panel (set river length panel)
 
-      riverLength = length;
-
       for (let i = 1; i <= length; i++) rounds.push(i); // Rounds contains number of cards to be dealt each round
       for (let i = length; i > 0; i--) rounds.push(i);
 
-      for (let i = 0; i < 10; i++) getByID(`trick_button_${i + 1}`).disabled = false; // Enable all buttons
+      for (let i = 0; i < 10; i++)
+        getByID(`trick_button_${i + 1}`).disabled = false; // Enable all buttons
       
-      for (let i = length; i < 10; i++) getByID(`trick_button_${i + 1}`).disabled = true; // Disable invalid buttons
+      for (let i = length; i < 10; i++)
+        getByID(`trick_button_${i + 1}`).disabled = true; // Disable invalid buttons
 
       roundHeaderPanel = createElement('div'); // Create panel where round numbers will be displayed
       roundHeaderPanel.id = 'roundHeaderPanel';
@@ -626,30 +792,42 @@
 
       for (let i = 0; i < playerCount; i++) {
 
-        var playerHeaderPanel = createElement('div'); // Players header panel
+        var playerHeaderPanel = createElement('div'); // All other player related elements will be appended in this panel
         playerHeaderPanel.classList.add('center', 'player_header');
         playerHeaderPanel.style.width = columnWidth;
 
         var nameHeaderLabel = createElement('label');
+        // nameHeaderLabel.innerHTML = '';
         nameHeaderLabel.classList.add('center', 'header_label');
         playerHeaderPanel.appendChild(nameHeaderLabel);
 
         var scoreHeaderLabel = createElement('label');
+        // scoreHeaderLabel.innerHTML = '';
         scoreHeaderLabel.classList.add('right', 'header_label');
         playerHeaderPanel.appendChild(scoreHeaderLabel);
 
-        headerPanel.appendChild(playerHeaderPanel); // Append to header panel containing all player header panels
+        headerPanel.appendChild(playerHeaderPanel);
 
         var playerPanel = createElement('div'); // All other player related elements will be appended in this panel
+        playerPanel.id = `playerPanel${i}`;
         playerPanel.classList.add('center', 'player_column');
         playerPanel.style.width = columnWidth;
 
+        // 
         // Set panel frame colors according to role
-        playerPanel.style.borderColor = DEFAULT_BORDER_COLOR; // i != 0 or 1
-        if (i === 0) playerPanel.style.borderColor = DEALER_BORDER_COLOR;
-        if (i === 1) playerPanel.style.borderColor = LEADER_BORDER_COLOR;
+        // 
 
-        var input = createElement('input'); // Create player name text input
+        if (i === 0) {
+          playerPanel.style.borderColor = DEALER_BORDER_COLOR;
+
+        } else if (i === 1) {
+          playerPanel.style.borderColor = LEADER_BORDER_COLOR;
+
+        } else {
+          playerPanel.style.borderColor = DEFAULT_BORDER_COLOR;
+        }
+
+        var input = createInput(); // Create player name text input
         input.setAttribute('type', 'text');
         input.classList.add('full_width', 'player_name');
         input.placeholder  = `player${i + 1}`;
@@ -675,6 +853,7 @@
           gamePanel: gamePanel,
           roundPanel: null,
           input: input, // Where player name is set
+
           nameHeaderLabel: nameHeaderLabel,
           scoreHeaderLabel: scoreHeaderLabel,
         });
@@ -697,7 +876,71 @@
         player.scoreHeaderLabel.innerHTML = player.score;
 
         player.input.classList.add('hidden');
+
+        // 
+        // Create elements used when adjusting player scores
+        // 
+
+        // Create buttons used to select the player whom will have their score adjusted if required
+        const button = createButton();
+        button.classList.add('big_btn', 'adjust_btn');
+        button.innerHTML = player.name;
+        button.onclick = (e) => {
+          if (selectedAdjustButton) selectedAdjustButton.classList.remove('yes_button_selected'); // Remove selected style from currently selected button
+          selectedAdjustButton = button; // Set selected button
+          button.classList.add('yes_button_selected');
+        };
+        adjustButtonsPanel.appendChild(button);
       }
+
+      // Create input used to set player score adjustment
+      adjustAmountInput = createInput();
+      adjustAmountInput.classList.add('adjust_input');
+      adjustAmountInput.value = '0';
+      adjustAmountInput.oninput = (e) => adjustAmountInput.value = adjustAmountInput.value.replace(/[^0-9-]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');
+      adjustButtonsPanel.appendChild(adjustAmountInput);
+
+      // Create button to decrement player score when adjusting
+      let button = createButton();
+      button.classList.add('big_btn', 'adjust_btn');
+      button.innerHTML = '-';
+      button.onclick = (e) => {
+        adjustAmount = clamp(adjustAmount - 1, -50, 50);
+        adjustAmountInput.value = adjustAmount;
+      };
+      adjustButtonsPanel.appendChild(button);
+
+      // Create button to increment player score when adjusting
+      button = createButton();
+      button.classList.add('big_btn', 'adjust_btn');
+      button.innerHTML = '+';
+      button.onclick = (e) => {
+        adjustAmount = clamp(adjustAmount + 1, -50, 50);
+        adjustAmountInput.value = adjustAmount;
+      };
+      adjustButtonsPanel.appendChild(button);
+
+      // Create confirm score adjustment button
+      button = createButton();
+      button.classList.add('big_btn', 'adjust_btn');
+      button.innerHTML = 'Apply';
+      button.onclick = (e) => {
+        if (selectedAdjustButton) {
+          // Apply adjustment to the currently selected player
+          const player = getPlayerByName(selectedAdjustButton.innerHTML);
+          player.score += adjustAmountInput.value * 1;
+          player.scoreHeaderLabel.innerHTML = player.score;
+          player.roundScoreLabel.innerHTML = player.score;
+        }
+      };
+      adjustButtonsPanel.appendChild(button);
+
+      // Create cancel score adjustment button
+      button = createButton();
+      button.classList.add('big_btn', 'adjust_btn');
+      button.innerHTML = 'Finished';
+      button.onclick = (e) => showAdjustScorePanel(false);
+      adjustButtonsPanel.appendChild(button);
 
       roundDisplayPanel.innerHTML = '';
 
@@ -708,19 +951,20 @@
     
       dealer = -1; // Dealer is first player
 
-      startDate = new Date();
-
       advance();
     },
 
-    // deepCopy = (source) => JSON.parse(JSON.stringify(source)),
+    deepCopy = (source) => JSON.parse(JSON.stringify(source)),
 
     // Advance to the next round
     advance = () => {
 
       // Cache data for use if there was a misdeal
-      cachedRounds = [...rounds];//deepCopy(rounds);
-      cachedDealer = dealer;//deepCopy(dealer);
+      cachedRounds = deepCopy(rounds);
+      cachedDealer = deepCopy(dealer);
+      players.forEach(player => {
+        player.oldScore = deepCopy(player.score);
+      });
 
       showElement(endRoundPanel, false); // Hide current panel (end round panel)
 
@@ -744,12 +988,12 @@
 
       bidder = leader; // First bidder is always the leader
 
+      log(`dealer:${dealer} leader:${leader} bidder:${bidder}`);
+
       updateBiddingLabelText();
 
       players.forEach(player => {
         player.score += player.points; // Add points from last round
-
-        player.oldScore = player.score; // Cache for reset when misdeal
 
         player.scoreHeaderLabel.innerHTML = player.score;
 
@@ -763,6 +1007,7 @@
         player.roundPanel = roundPanel; // Used for removing in the case of a misdeal
 
         var label = newLabel(player.score);
+        player.roundScoreLabel = label;
         label.classList.add('hud_label', 'left');
         roundPanel.appendChild(label);
 
@@ -796,6 +1041,7 @@
       let event = newHistoricEvent();
       historicEvents.push(event);
       saveHistory();
+
 
       // Remove player panel effects
       for (let i = 0; i < players.length; i++) {
@@ -850,9 +1096,6 @@
 
         }
 
-        // if (round != 1 && tricksClaimedByOtherPlayers === 0) {
-        //   getByID('trick_button_0').disabled = true; // Cannot claim zero tricks
-        // }
       }
     },
 
@@ -890,6 +1133,107 @@
       player.noButton.disabled = !state;
     },
 
+    // Show or hide the score adjustment pane according to the given state
+    showAdjustScorePanel = (state) => {
+      if (state) {
+        // Reset the adjustment variable
+        adjustAmount = 0;
+        adjustAmountInput.value = adjustAmount;
+      }
+
+      if (selectedAdjustButton) selectedAdjustButton.classList.remove('yes_button_selected');
+      selectedAdjustButton = null;
+      showElement(adjustScorePanel, state);
+    },
+
+    // Set the cursor position with offsets depending on which cursor is showing
+    setCursorPosition = (e) => {
+      let 
+      x = 0,
+      y = 0;
+
+      if (cursorImageName === 'hand') {
+        x = 27;
+
+      } else if (cursorImageName === 'disabled') {
+        x = 48;
+        y = 48;
+
+      } else if (cursorImageName === 'caret') {
+        y = 48;
+        
+      }
+      cursorImage.style.left = `${e.clientX - x}px`;
+      cursorImage.style.top = `${e.clientY - y}px`;
+    },
+
+    // Set the cursor image
+    setCursorImage = () => {
+      let image = ARROW_IMAGE;
+
+      if (cursorImageName === 'hand') {
+        image = (mouseDown) ? HAND2_IMAGE : HAND_IMAGE;
+
+      } else if (cursorImageName === 'caret') {
+        image = CARET_IMAGE;
+
+      } else if (cursorImageName === 'scroll') {
+        image = SCROLL_IMAGE;
+
+      } else if (cursorImageName === 'disabled') {
+        image = DISABLED_IMAGE;
+
+      }
+      cursorImage.src = image;
+    },
+
+    // Mouse entered the inner area of the input (e.target)
+    mouseEnteredTextInput = (e) => {
+      e.preventDefault();
+      cursorImageName = 'caret';
+      setCursorImage();
+      setCursorPosition(e);
+    },
+
+    // Mouse left the inner area of the input (e.target)
+    mouseleftTextInput = (e) => {
+      e.preventDefault();
+      cursorImageName = 'arrow';
+      setCursorImage();
+      setCursorPosition(e);
+    },
+
+    // Mouse entered the inner area of the button (e.target)
+    mouseEnteredButton = (e) => {
+      e.preventDefault();
+      cursorImageName = (e.target.disabled) ? 'disabled' : 'hand';;
+      setCursorImage();
+      setCursorPosition(e);
+    },
+
+    // Mouse left the inner area of the button (e.target)
+    mouseLeftButton = (e) => {
+      e.preventDefault();
+      cursorImageName = 'arrow';
+      setCursorImage();
+      setCursorPosition(e);
+    },
+
+    // Create a new buttom element with handlers to change
+    createButton = () => {
+      const button = createElement('button');
+      button.onmouseout = mouseLeftButton;
+      button.onmouseover = mouseEnteredButton;
+      return button;
+    },
+
+    createInput = () => {
+      const input = createElement('input');
+      input.onmouseout = mouseleftTextInput;
+      input.onmouseover = mouseEnteredTextInput;
+      return input;
+    },
+
     //Set the number of claimed tricks for the bidding player to the given number
     claimTricks = (number) => {
       tricksClaimedByOtherPlayers += number;
@@ -909,7 +1253,7 @@
       label.classList.add('hud_label');
       biddingPlayer.claimedTricksLabel = label;
 
-      var yesButton = createElement('button');
+      var yesButton = createButton();
       yesButton.classList.add('hud_btn', 'hidden');
       yesButton.innerHTML = 'Yes';
       biddingPlayer.yesButton = yesButton;
@@ -934,7 +1278,7 @@
         sanityCheck();
       };
 
-      var noButton = createElement('button');
+      var noButton = createButton();
       noButton.classList.add('hud_btn', 'hidden');
       noButton.innerHTML = 'No';
       biddingPlayer.noButton = noButton;
@@ -942,7 +1286,7 @@
       noButton.onclick = () => { // No button click handler
         biddingPlayer.scoreUpdated = true;
         biddingPlayer.points = 0;
-        label.innerHTML = '-';
+        label.innerHTML = '|-|';
 
         biddingPlayer.gotTricks = false;
         yesButton.classList.remove('yes_button_selected');
@@ -1020,18 +1364,14 @@
     showRules = (state) => {
       showElement(rulesPanel, state);
       showElement(newGamePanel, !state);
+      updateScrollbar(null, true);
     },
 
     // User clicked the "About" button
     showAbout = (state) => {
       showElement(aboutPanel, state);
       showElement(newGamePanel, !state);
-    },
-
-    // User clicked the "Settings" button
-    showSettings = (state) => {
-      showElement(settingsPanel, state);
-      showElement(newGamePanel, !state);
+      updateScrollbar();
     },
 
     // User clicked the "History" button
@@ -1039,57 +1379,62 @@
       showElement(historyPanel, state);
       showElement(newGamePanel, !state);
       showElement(titlePanel, !state);
+      updateScrollbar();
     },
 
-    // Reset current round when a misdeal occurred
+    // In the case of a misdeal, erase and restart the current round
     misdeal = () => {
-      // Reset players
       for (let i = 0; i < players.length; i++) {
         const player = players[i];
-        player.roundPanel.parentNode.removeChild(player.roundPanel); // Remove all HTML elements that were added to the players panel when the round began
-
-        player.score = player.oldScore; // reset
+        player.roundPanel.parentNode.removeChild(player.roundPanel);
+        player.score = player.oldScore;
         player.points = 0;
+        // log(`${player.score} ${player.oldScore}`);
       }
 
-      // Reset game data
       dealer = cachedDealer;
       rounds = cachedRounds;
       roundDisplayPanel.lastChild.parentNode.removeChild(roundDisplayPanel.lastChild);
 
-      // Hide elements that might have been visible
       showElement(endRoundErrorLabel, false);
       showElement(endRoundPanel, false);
       showElement(biddingPanel, false);
 
-      advance(); // Restart round
+      advance();
     };
 
-    
-    // Load settings
-    let settings = localStorage.getItem(SETTINGS_FILENAME);
-
-    if (!settings) {
-      // Settings don't exist, create and save default settings
-      settings = {
-        // TODO: Create settings
-      };
-      // localStorage.setItem(SETTINGS_FILENAME, settings)
+    // Set existing button handlers to change the cursor image as required
+    var buttons = document.getElementsByTagName('button');
+    for (let i = 0; i < buttons.length; i++) {
+      let button = buttons[i];
+      button.onmouseout = mouseLeftButton;
+      button.onmouseover = mouseEnteredButton;
+    }
+    // Set existing button handlers to change the cursor image as required
+    var anchors = document.getElementsByTagName('a');
+    for (let i = 0; i < anchors.length; i++) {
+      let anchor = anchors[i];
+      anchor.onmouseout = mouseLeftButton;
+      anchor.onmouseover = mouseEnteredButton;
     }
 
-    // Apply settings
+    cursorImage.src = ARROW_IMAGE;
 
-    // 
-    // TODO: Apply settings
-    // 
+    // Set cursor image and position when mouse moved inside window
+    onmousemove = (e) => {
+      setCursorImage();
+      setCursorPosition(e);
+    };
 
-    // const root = document.documentElement;
-    // log(`The value of --background-color is: ${getComputedStyle(root).getPropertyValue('--background-color')}`);
-    // root.style.setProperty('--background-color', '#f0f');
+    onmouseup = (e) => {
+      mouseDown = false;
+      setCursorImage();
+    };
 
-    // 
-    // Draw a background using truchet tiles
-    // 
+    onmousedown = (e) => {
+      mouseDown = true;
+      setCursorImage();
+    };
 
     // 
     // Process historic events (history of previous games)
@@ -1156,7 +1501,7 @@
     }
 
     // 
-    // Generate background using "Truchet Tiles"
+    // Draw a background using truchet tiles
     // 
 
     const 

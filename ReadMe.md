@@ -7,9 +7,19 @@
 
 ### What's New?
 
-After a lot of testing (playing with friends) version 2.0.0 is born.
+v2.0.1 (3 Aug 2023)
 
-v2.0.0 (28 Jul 2023)
+- Implemented custom cursors to assist the visually impaired among us. Not looking at you in particular Papa Bob.
+
+- The '-' that was displayed when a player did not get their claimed number of tricks has been changed to '|-|' so it looks a bit more like a ladder when they fail many times in a row :D
+
+- Contextmenus, and dragging & dropping elements disabled inside application.
+
+- Tweaked more styles
+
+- Updated rules.
+
+<details><summary>v2.0.0 (28 Jul 2023)</summary><p>
 
 - Changed to a 3 row layout using CSS grid.
 
@@ -45,7 +55,7 @@ v2.0.0 (28 Jul 2023)
 
 - Updated rules.
 
-
+</p></details>
 
 <details><summary>v1.0.0 (15 May 2023)</summary><p>
 
@@ -60,5 +70,7 @@ Up and Down the River is a single page web application created to keep score whe
 Up and Down the River mostly exists because I'm so terribly inept at scoring with pen and paper :D
 
 Up and Down the River has been mashed into a single file because it refuses to function on my Android tablet when it is split into its component parts (HTML, CSS, and JavaScript).
+
+Up and Down the River has been tested working in Firefox and Chrome on Windows10, your mileage may vary with other browsers and operating systems.
 
 Anyway, if you have any questions or suggestions just raise an issue.
