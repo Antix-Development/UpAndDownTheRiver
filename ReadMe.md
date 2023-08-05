@@ -11,7 +11,9 @@ v2.0.1 (3 Aug 2023)
 
 - Implemented custom cursors to assist the visually impaired among us. Not looking at you in particular Papa Bob.
 
-- The '-' that was displayed when a player did not get their claimed number of tricks has been changed to '|-|' so it looks a bit more like a ladder when they fail many times in a row :D
+- Implemented a feature to let the scorekeeper adjust a players score if they made a boo-boo.
+
+- The '-' that was displayed when a player did not get their claimed number of tricks has been changed to '|-|' so it looks a bit more like a ladder when players fail many times in a row :D
 
 - Contextmenus, and dragging & dropping elements disabled inside application.
 
