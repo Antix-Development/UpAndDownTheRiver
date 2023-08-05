@@ -430,7 +430,7 @@
             <!-- Game credits panel -->
             <div id="about_panel" class="center hidden">
               <br>
-              <h2>Up and Down the River version 2.0.1</h2>
+              <h2>Up and Down the River version 2.0.2</h2>
               <h2>(c) 2023 Cliff Earl, <a href="https://github.com/Antix-Development" target="_blank">Antix Development</a>.</h2>
               <h2>Created using MicroSoft <a href="https://code.visualstudio.com/" target="_blank">Visual Studio Code</a></h2><br>
               <h2>Scrollbar code inspired by <a href="https://github.com/buzinas/simple-scrollbar" target="_blank">Simple Scrollbar</a></h2><br>
@@ -1218,7 +1218,7 @@
     // Mouse entered the inner area of the button (e.target)
     mouseEnteredButton = (e) => {
       e.preventDefault();
-      cursorImageName = (e.target.disabled) ? 'disabled' : 'hand';;
+      cursorImageName = (e.target.disabled) ? 'disabled' : 'hand';
       setCursorImage();
       setCursorPosition(e);
     },
@@ -1234,15 +1234,15 @@
     // Create a new buttom element with handlers to change
     createButton = () => {
       const button = createElement('button');
-      button.onmouseout = mouseLeftButton;
-      button.onmouseover = mouseEnteredButton;
+      button.onpointerleave = mouseLeftButton;
+      button.onpointerenter = mouseEnteredButton;
       return button;
     },
 
     createInput = () => {
       const input = createElement('input');
-      input.onmouseout = mouseleftTextInput;
-      input.onmouseover = mouseEnteredTextInput;
+      input.onpointerleave = mouseleftTextInput;
+      input.onpointerenter = mouseEnteredTextInput;
       return input;
     },
 
@@ -1419,21 +1419,22 @@
     var buttons = document.getElementsByTagName('button');
     for (let i = 0; i < buttons.length; i++) {
       let button = buttons[i];
-      button.onmouseout = mouseLeftButton;
-      button.onmouseover = mouseEnteredButton;
+      button.onpointerleave = mouseLeftButton;
+      button.onpointerenter = mouseEnteredButton;
     }
     // Set existing button handlers to change the cursor image as required
     var anchors = document.getElementsByTagName('a');
     for (let i = 0; i < anchors.length; i++) {
       let anchor = anchors[i];
-      anchor.onmouseout = mouseLeftButton;
-      anchor.onmouseover = mouseEnteredButton;
+      anchor.onpointerleave = mouseLeftButton;
+      anchor.onpointerenter = mouseEnteredButton;
     }
 
     cursorImage.src = ARROW_IMAGE;
 
+    
     // Set cursor image and position when mouse moved inside window
-    onmousemove = (e) => {
+    onpointermove = (e) => {
       setCursorImage();
       setCursorPosition(e);
     };

@@ -7,7 +7,16 @@
 
 ### What's New?
 
-v2.0.1 (3 Aug 2023)
+v2.0.2 (4 Aug 2023)
+
+- Background imagery is now randomly colored.
+
+- Implemented custom scroll bars so cursor imagery works correctly because it cannot be changed using native scroll bars!
+
+- Changed mouse event handlers to pointer event handlers so that some things work in Chrome as they do in Firefox.
+
+
+<details><summary>v2.0.1 (3 Aug 2023)</summary><p>
 
 - Implemented custom cursors to assist the visually impaired among us. Not looking at you in particular Papa Bob.
 
@@ -20,6 +29,8 @@ v2.0.1 (3 Aug 2023)
 - Tweaked more styles
 
 - Updated rules.
+
+</p></details>
 
 <details><summary>v2.0.0 (28 Jul 2023)</summary><p>
 
