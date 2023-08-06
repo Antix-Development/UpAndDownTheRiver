@@ -7,7 +7,11 @@
 
 ### What's New?
 
-v2.0.2 (4 Aug 2023)
+v2.0.3 (6 Aug 2023)
+
+- The dealer can no longer claim the maximum number of tricks of all other players claimed no tricks.
+
+<details><summary>v2.0.2 (4 Aug 2023)</summary><p>
 
 - Background imagery is now randomly colored.
 
@@ -15,6 +19,7 @@ v2.0.2 (4 Aug 2023)
 
 - Changed mouse event handlers to pointer event handlers so that some things work in Chrome as they do in Firefox.
 
+</p></details>
 
 <details><summary>v2.0.1 (3 Aug 2023)</summary><p>
 

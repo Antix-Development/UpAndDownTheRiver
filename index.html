@@ -449,7 +449,7 @@
             <!-- Game credits panel -->
             <div id="about_panel" class="center hidden">
               <br>
-              <h2>Up and Down the River version 2.0.2</h2>
+              <h2>Up and Down the River version 2.0.3</h2>
               <br>
               <h2>(c) 2023 Cliff Earl, <a href="https://github.com/Antix-Development" target="_blank">Antix Development</a>.</h2>
               <br>
@@ -1125,13 +1125,15 @@
 
         if (tricksClaimedByOtherPlayers === round) {
           getByID('trick_button_0').disabled = true; // Cannot claim zero tricks
-        
+
         } else if (tricksClaimedByOtherPlayers > 0 && tricksClaimedByOtherPlayers < round) {
           getByID(`trick_button_${round - tricksClaimedByOtherPlayers}`).disabled = true; // Cannot claim tricks that cause maximum tricks to be claimed
         
         } else if (round === 1 && tricksClaimedByOtherPlayers === 0) {
           getByID('trick_button_0').disabled = true; // Cannot claim one trick
 
+        } else if (tricksClaimedByOtherPlayers === 0) {
+          getByID(`trick_button_${round}`).disabled = true; // Cannot claim the number of tricks in this round
         }
 
       }
