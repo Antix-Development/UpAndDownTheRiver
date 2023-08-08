@@ -451,7 +451,7 @@
               <br>
               <h2>Up and Down the River version 2.0.3</h2>
               <br>
-              <h2>(c) 2023 Cliff Earl, <a href="https://github.com/Antix-Development" target="_blank">Antix Development</a>.</h2>
+              <h2>(c) 2023 Cliff Earl, <a href="httfps://github.com/Antix-Development" target="_blank">Antix Development</a>.</h2>
               <br>
               <h2>Created using MicroSoft <a href="https://code.visualstudio.com/" target="_blank">Visual Studio Code</a></h2>
               <br>
@@ -670,6 +670,8 @@
 
   <script>
     var 
+    startDate,
+    
     roundHeaderLabel,
 
     round,
@@ -988,6 +990,8 @@
       players[i].input.readOnly = true;
     
       dealer = -1; // Dealer is first player
+
+      startDate = new Date();
 
       advance();
     },
