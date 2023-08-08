@@ -671,7 +671,8 @@
   <script>
     var 
     startDate,
-    
+    riverLength,
+
     roundHeaderLabel,
 
     round,
@@ -798,6 +799,8 @@
     // User set river length (number of rounds up and down to be played)
     setRiverLength = (length) => {
       showElement(riverLengthPanel, false); // Hide current panel (set river length panel)
+
+      riverLength = length;
 
       for (let i = 1; i <= length; i++) rounds.push(i); // Rounds contains number of cards to be dealt each round
       for (let i = length; i > 0; i--) rounds.push(i);
