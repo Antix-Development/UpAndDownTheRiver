@@ -180,7 +180,7 @@
       #scroll_bar {
         position: relative;
         background: #8d8;
-        width: 26px;
+        width: 20px;
         border-radius: 4px;
         top: 0;
         z-index: 2;
@@ -1071,7 +1071,8 @@
         
       roundDisplayPanel.appendChild(newLabel(round));
 
-      contentPanel.scrollTop = contentPanel.scrollHeight; // Force new content to be visible
+      scrollContent.scrollTop = scrollContent.scrollHeight; // Force new content to be visible
+      // contentPanel.scrollTop = contentPanel.scrollHeight; // Force new content to be visible
 
       showElement(biddingPanel, true); // Show next panel (end round panel)
     },
